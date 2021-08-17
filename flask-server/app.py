@@ -2,7 +2,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from db_connect import db  # import SQLAlchemy object
-from models import User
+from api.user import users_blueprint
 
 # Extensions to initialize with app
 db_migration = Migrate()
@@ -10,6 +10,7 @@ bcrypt = Bcrypt()
 
 # Create a Flask instance
 app = Flask(__name__)
+app.register_blueprint(users_blueprint)
 
 # Configs
 app.config[
@@ -23,15 +24,3 @@ app.secret_key = "BLKJSSLDIJLJFLKSJDFLIJ"
 db.init_app(app)
 db_migration.init_app(app, db)
 bcrypt.init_app(app)
-
-
-@app.route("/")
-def index():
-    return "Hello World!"
-
-
-@app.route("/test")
-def testMigration():
-    user = User("aaa", "asdfasdf", "Yulie")
-    db.session.add(user)
-    db.session.commit()
