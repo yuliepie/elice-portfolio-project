@@ -1,10 +1,8 @@
-from flask import Blueprint, request, jsonify
-from models import User
-from db_connect import db
+from . import users_blueprint
+from flask import request, jsonify
+from project.models import User
+from project import db
 from sqlalchemy.exc import IntegrityError
-
-
-users_blueprint = Blueprint("users", __name__)
 
 
 @users_blueprint.route("/")
