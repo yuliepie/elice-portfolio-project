@@ -52,8 +52,10 @@ def create_app():
 def register_blueprints(app):
     # Import & register blueprints
     from project.api import users_blueprint
+    from project.api import user_details_blueprint
 
     app.register_blueprint(users_blueprint, url_prefix="/api")
+    app.register_blueprint(user_details_blueprint, url_prefix="/api")
 
 
 def initialize_extensions(app):
