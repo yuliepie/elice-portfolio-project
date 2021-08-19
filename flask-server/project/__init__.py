@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 import os
+from flask_login import LoginManager
 
 
 #######################
@@ -14,6 +15,7 @@ import os
 db = SQLAlchemy()
 db_migration = Migrate()
 bcrypt = Bcrypt()
+login = LoginManager()
 
 
 ######################################
@@ -55,3 +57,11 @@ def initialize_extensions(app):
     db.init_app(app)
     db_migration.init_app(app, db)
     bcrypt.init_app(app)
+    login.init_app(app)
+
+    # flask-login configuration - loads user object from session
+    from project.models import User
+
+    @login.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))

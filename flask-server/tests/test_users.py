@@ -69,3 +69,83 @@ def test_duplicate_user(test_client):
     assert response.status_code == 200
     assert response_data["result"] == 0
     assert response_data["message"] == "existing user"
+
+
+def test_valid_login_and_logout(test_client, register_test_user):
+    """
+    GIVEN a Flask app for testing,
+    WHEN valid credential data is posted to '/login' (POST)
+    THEN check response is success.
+    """
+    login_data = {
+        "email": "testlogin@testing.com",
+        "password": "password123",
+    }
+    response = test_client.post(
+        "/api/login", data=json.dumps(login_data), content_type="application/json"
+    )
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["result"] == 1
+
+    """
+    WHEN request to '/logout' is made for logged in user (GET)
+    THEN check response is success.
+    """
+    response = test_client.get("/api/logout")
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["result"] == 1
+
+
+def test_invalid_login(test_client, register_test_user):
+    """
+    GIVEN a flask app for testing,
+    WHEN invalid credentials are posted to '/login' (POST)
+    THEN check response is fail.
+    """
+    login_data = {
+        "email": "testlogin@testing.com",
+        "password": "password123wrong",
+    }
+    response = test_client.post(
+        "/api/login", data=json.dumps(login_data), content_type="application/json"
+    )
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["result"] == 0
+
+
+def test_error_login_when_already_loggedin(test_client, log_in_test_user):
+    """
+    GIVEN a flask app for testing,
+    WHEN credentials are posted to '/login' when user is already logged in (POST)
+    THEN check response is fail.
+    """
+    login_data = {
+        "email": "testlogin@testing.com",
+        "password": "password123",
+    }
+    response = test_client.post(
+        "/api/login", data=json.dumps(login_data), content_type="application/json"
+    )
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["result"] == 0
+
+
+def test_error_logout_when_not_loggedin(test_client):
+    """
+    GIVEN a flask app for testing,
+    WHEN a request is made to '/logout' when user not logged in (GET)
+    THEN check response is fail.
+    """
+
+    test_client.get("/api/logout")  # Log out just in case
+    response = test_client.get("/api/logout")
+
+    assert response.status_code == 401

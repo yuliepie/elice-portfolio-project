@@ -1,6 +1,6 @@
 import pytest
 from project import create_app
-from flask import current_app
+from flask import current_app, json
 from project.models import User
 from project import db
 
@@ -35,3 +35,30 @@ def test_client():
 def new_user():
     user = User("test@testing.com", "password123", "김테스터")
     return user
+
+
+# Register a test user for login/logout
+@pytest.fixture(scope="module")
+def register_test_user(test_client):
+    new_user_data = {
+        "email": "testlogin@testing.com",
+        "password": "password123",
+        "name": "김로그인",
+    }
+    test_client.post(
+        "/api/users", data=json.dumps(new_user_data), content_type="application/json"
+    )
+    yield
+
+
+@pytest.fixture(scope="function")
+def log_in_test_user(test_client, register_test_user):
+    user_data = {
+        "email": "testlogin@testing.com",
+        "password": "password123",
+    }
+    test_client.post(
+        "/api/login", data=json.dumps(user_data), content_type="application/json"
+    )
+    yield
+    test_client.get("/api/logout")
