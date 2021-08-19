@@ -40,3 +40,4 @@ __pycache__/
 # instance folder for runtime files
 flask-server/instance/*.db
 flask-server/instance/*.log
+flask-server/instance/*.log*

@@ -51,6 +51,7 @@ def register_test_user(test_client):
     yield
 
 
+# Login a test user to test logout function
 @pytest.fixture(scope="function")
 def log_in_test_user(test_client, register_test_user):
     user_data = {
@@ -62,3 +63,34 @@ def log_in_test_user(test_client, register_test_user):
     )
     yield
     test_client.get("/api/logout")
+
+
+# Create fixture that adds users to database
+@pytest.fixture(scope="module")
+def add_users_to_db(test_client):
+    data1 = {
+        "email": "apple@testing.com",
+        "password": "password123",
+        "name": "김사과",
+    }
+    data2 = {
+        "email": "banana@testing.com",
+        "password": "password123",
+        "name": "정바나나",
+    }
+    data3 = {
+        "email": "cherry@testing.com",
+        "password": "password123",
+        "name": "이체리",
+    }
+    user1 = User(data1["email"], data1["password"], data1["name"])
+    user1.description = "안녕하세요 사과입니다."
+
+    user2 = User(data2["email"], data2["password"], data2["name"])
+    user2.description = "안녕 나는 바나나."
+
+    user3 = User(data3["email"], data3["password"], data3["name"])
+
+    db.session.add_all([user1, user2, user3])
+    db.session.commit()
+    yield

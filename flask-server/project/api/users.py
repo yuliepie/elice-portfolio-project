@@ -39,7 +39,7 @@ def login():
         current_app.logger.info(
             f"Duplicate login attempt by user: {current_user.email}"
         )
-        return jsonify({"result": 0, "meesage": "already logged in."})
+        return jsonify({"result": 0, "message": "already logged in."})
 
     login_data = request.json
     user = User.query.filter_by(email=login_data.get("email")).first()
@@ -47,7 +47,15 @@ def login():
         # valid credentials - log in user
         login_user(user, remember=True)
         current_app.logger.info(f"Logged in user: {current_user.email}")
-        return {"result": 1, "message": f"{current_user.email}, {current_user.name}"}
+        return {
+            "result": 1,
+            "user": {
+                "id": current_user.id,
+                "email": current_user.email,
+                "name": current_user.name,
+            },
+            "message": "login success",
+        }
 
     return jsonify({"result": 0, "message": "invalid credentials"})
 
@@ -59,3 +67,24 @@ def logout():
     current_app.logger.info(f"Logged out user: {current_user.email}")
     logout_user()
     return jsonify({"result": 1, "message": "logout success"})
+
+
+# View all users
+@users_blueprint.route("/users")
+def view_users():
+    search_query = request.args.get("name", type=str)
+    if search_query:
+        print(search_query)
+        users = db.session.query(User.id, User.name, User.description).filter(
+            User.name.like(search_query + "%")
+        )
+    else:
+        users = db.session.query(User.id, User.name, User.description).all()
+
+    result = [dict(user) for user in users]
+    return jsonify(
+        {
+            "result": 1,
+            "users": result,
+        }
+    )
