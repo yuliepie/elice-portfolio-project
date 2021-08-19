@@ -33,3 +33,10 @@ venv
 __pycache__/
 *.py[cod]
 *$py.class
+
+# pytest files
+.pytest_cache/
+
+# instance folder for runtime files
+flask-server/instance/*.db
+flask-server/instance/*.log
