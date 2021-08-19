@@ -7,14 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 @users_blueprint.route("/")
 def index():
-    return "Hello World!"
-
-
-@users_blueprint.route("/test")
-def testMigration():
-    user = User("aaa", "asdfasdf", "Yulie")
-    db.session.add(user)
-    db.session.commit()
+    return jsonify({"result": "success"})
 
 
 # Register new user
@@ -28,7 +21,10 @@ def register():
         )
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"result": 0, "message": "success"})
+        return jsonify({"result": 1, "message": "registration success"})
     except IntegrityError:
         db.session.rollback()
-        return jsonify({"result": 1, "message": "existing user"})
+        return jsonify({"result": 0, "message": "existing user"})
+    except:
+        db.session.rollback()
+        return jsonify({"result": 0, "message": "registration fail"})
