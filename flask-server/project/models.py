@@ -78,7 +78,7 @@ class Education(db.Model):
 
     def __init__(self, school_name: str, major: str, status_id: int, user_id: int):
         self.school_name = school_name
-        self.major = self.major
+        self.major = major
         self.status_id = status_id
         self.user_id = user_id
 
@@ -142,11 +142,19 @@ class Project(db.Model):
     end_date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    def __init__(self, name: str, description: str, start_date: date, end_date: date):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        start_date: date,
+        end_date: date,
+        user_id: int,
+    ):
         self.name = name
         self.description = description
         self.start_date = start_date
         self.end_date = end_date
+        self.user_id = user_id
 
 
 class Certification(db.Model):
