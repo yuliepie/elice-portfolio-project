@@ -97,6 +97,9 @@ class EducationStatus(db.Model):
     status_name = db.Column(db.String(30), nullable=False)
     educations = db.relationship("Education", backref="edustatus", lazy=True)
 
+    def __init__(self, status_name: str):
+        self.status_name = status_name
+
 
 class Award(db.Model):
     """

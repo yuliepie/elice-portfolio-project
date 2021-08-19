@@ -1,17 +1,9 @@
-from project import create_app
 from flask import json
 
 """
 test_client is created by a fixture before the tests run,
 and passed into each test.
 """
-
-
-def test_test(test_client):
-    response = test_client.get("/api/")
-    print("aaaa", response.headers.get("Location"))
-    print(response)
-    assert response.status_code == 200
 
 
 def test_register_user(test_client):

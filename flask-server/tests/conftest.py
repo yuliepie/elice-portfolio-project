@@ -1,7 +1,15 @@
+from datetime import date
 import pytest
 from project import create_app
 from flask import current_app, json
-from project.models import User
+from project.models import (
+    User,
+    EducationStatus,
+    Education,
+    Award,
+    Project,
+    Certification,
+)
 from project import db
 
 #####################################################
@@ -23,6 +31,14 @@ def test_client():
 
     current_app.logger.info("Created test_client")
     db.create_all()  # Create SQLite Test DB
+
+    # seed education status
+    status1 = EducationStatus("재학중")
+    status2 = EducationStatus("학사졸업")
+    status3 = EducationStatus("석사졸업")
+    status4 = EducationStatus("박사졸업")
+    db.session.add_all([status1, status2, status3, status4])
+    db.session.commit()
 
     yield testing_client
 
@@ -65,7 +81,7 @@ def log_in_test_user(test_client, register_test_user):
     test_client.get("/api/logout")
 
 
-# Create fixture that adds users to database
+# Create fixture that adds users to test database
 @pytest.fixture(scope="module")
 def add_users_to_db(test_client):
     data1 = {
@@ -94,3 +110,31 @@ def add_users_to_db(test_client):
     db.session.add_all([user1, user2, user3])
     db.session.commit()
     yield
+
+
+# Create fixture that adds user details to test database
+@pytest.fixture(scope="module")
+def add_user_details(test_client, register_test_user):
+    data_raw = {
+        "edu1": ["학교1", "전공1", 1, 1],
+        "edu2": ["학교2", "전공2", 2, 1],
+        "award1": ["수상1", "수상내역", 1],
+        "award2": ["수상2", "수상내역", 1],
+        "proj1": ["프로젝트1", "프로젝트내역", date(2020, 1, 1), date(2020, 2, 2), 1],
+        "proj2": ["프로젝트2", "프로젝트내역", date(2021, 1, 1), date(2021, 2, 2), 1],
+        "cert1": ["자격증1", "발급자", date(2020, 1, 1), 1],
+        "cert2": ["자격증2", "발급자", date(2021, 2, 2), 1],
+    }
+
+    edu1 = Education(*data_raw["edu1"])
+    edu2 = Education(*data_raw["edu2"])
+    aw1 = Award(*data_raw["award1"])
+    aw2 = Award(*data_raw["award2"])
+    proj1 = Project(*data_raw["proj1"])
+    proj2 = Project(*data_raw["proj2"])
+    cert1 = Certification(*data_raw["cert1"])
+    cert2 = Certification(*data_raw["cert2"])
+
+    db.session.add_all([edu1, edu2, aw1, aw2, proj1, proj2, cert1, cert2])
+    db.session.commit()
+    yield data_raw
