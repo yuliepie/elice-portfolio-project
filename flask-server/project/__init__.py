@@ -4,6 +4,9 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 import os
 from flask_login import LoginManager
+from logging.handlers import RotatingFileHandler
+import logging
+from flask.logging import default_handler
 
 
 #######################
@@ -41,7 +44,7 @@ def create_app():
 
     initialize_extensions(app)
     register_blueprints(app)
-    # TODO: Configure logging
+    configure_logging(app)
 
     return app
 
@@ -65,3 +68,20 @@ def initialize_extensions(app):
     @login.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+
+
+def configure_logging(app):
+    # Logging Configuration
+    file_handler = RotatingFileHandler(
+        "instance/elice-portfolio-app.log", maxBytes=16384, backupCount=20  # UPDATED!
+    )
+    file_formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s: %(message)s [in %(filename)s:%(lineno)d]"
+    )
+    file_handler.setFormatter(file_formatter)
+    file_handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(file_handler)
+    # Remove the default logger configured by Flask
+    app.logger.removeHandler(default_handler)
+
+    app.logger.info("Starting the Flask Elice Portfolio App...")
