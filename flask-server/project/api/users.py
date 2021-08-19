@@ -4,6 +4,7 @@ from project.models import User
 from project import db
 from sqlalchemy.exc import IntegrityError
 from flask_login import login_user, current_user, login_required, logout_user
+import click
 
 
 @users_blueprint.route("/")
@@ -88,3 +89,41 @@ def view_users():
             "users": result,
         }
     )
+
+
+######################
+#### cli commands ####
+######################
+
+
+@users_blueprint.cli.command("create_default_users")
+def create_default_users():
+    """Create three new users and add them to the database"""
+    user1 = User("john@app.com", "1234", "김존수")
+    user1.description = "안녕하세요 김존수입니다!!!"
+    user2 = User("sally@app.com", "1234", "김샐리")
+    user2.description = "안녕하세요 김샐리입니다!!!"
+    user3 = User("peter@app.com", "1234", "박피터")
+    user3.description = "안녕하세요 박피터입니다!!!"
+    db.session.add_all([user1, user2, user3])
+    db.session.commit()
+
+
+@users_blueprint.cli.command("delete_users")
+def delete_users():
+    """Clear all user records from table."""
+    db.session.query(User).delete()
+    db.session.commit()
+
+
+@users_blueprint.cli.command("create_user")
+@click.argument("email")
+@click.argument("pw")
+@click.argument("name")
+@click.argument("desc")
+def create(email, pw, name, desc):
+    """Create a new user and add it to the database"""
+    user = User(email, pw, name)
+    user.description = desc
+    db.session.add(user)
+    db.session.commit()

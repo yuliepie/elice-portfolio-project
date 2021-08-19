@@ -1,4 +1,5 @@
 from project import db, bcrypt
+from datetime import date
 
 
 class User(db.Model):
@@ -6,9 +7,10 @@ class User(db.Model):
     Represents a user of the application.
 
     Attributes:
-        * email (string)
-        * hashed password (string)
-        * name (string)
+        * email (string) : 이메일 주소
+        * password_hashed (string) : 해쉬된 비밀번호
+        * name (string) : 이름
+        * description (string) : 한줄소개
     """
 
     __tablename__ = "users"
@@ -55,13 +57,13 @@ class User(db.Model):
 
 class Education(db.Model):
     """
-    Represents an education detail of a user.
+    Represents an education record of a user.
 
     Attributes:
-        * name (string) : 학교 이름.
+        * school_name (string) : 학교 이름.
         * major (string) : 전공.
-        * status (integer) : 졸업상태. Foreign Key --> Education_Status
-        * user (integer) : 유저. Foreign Key --> User
+        * status_id (integer) : 졸업상태. Foreign Key --> Education_Status
+        * user_id (integer) : 유저. Foreign Key --> User
     """
 
     __tablename__ = "educations"
@@ -82,7 +84,12 @@ class Education(db.Model):
 
 
 class EducationStatus(db.Model):
-    """졸업 상태"""
+    """
+    Represents the Graduation status for an education record.
+
+    Attributes:
+        * status_name (string) : 상태 이름
+    """
 
     __tablename__ = "education_status"
 
@@ -90,12 +97,16 @@ class EducationStatus(db.Model):
     status_name = db.Column(db.String(30), nullable=False)
     educations = db.relationship("Education", backref="edustatus", lazy=True)
 
-    def __init__(self, status_name: str):
-        self.status_name = status_name
-
 
 class Award(db.Model):
-    """수상내역"""
+    """
+    Represents an award record for a user.
+
+    Attributes:
+        * name (string) : 수상 내역.
+        * description (string) : 상세 내역.
+        * user_id (integer) : 유저. Foreign Key --> User
+    """
 
     __tablename__ = "awards"
 
@@ -110,11 +121,17 @@ class Award(db.Model):
         self.user_id = user_id
 
 
-#############################
-# TODO: REVIEW DATE FORMAT!!!
-##############################
 class Project(db.Model):
-    """프로젝트"""
+    """
+    Represents a project record for a user.
+
+    Attributes:
+        * name (string) : 프로젝트 이름.
+        * description (string) : 프로젝트 설명.
+        * start_date (datetime) : 시작 날짜.
+        * end_date (datetime) : 종료 날짜.
+        * user_id (integer) : 유저. Foreign Key --> User
+    """
 
     __tablename__ = "projects"
 
@@ -125,18 +142,23 @@ class Project(db.Model):
     end_date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    def __init__(self, name: str, description: str, start_date: str, end_date: str):
+    def __init__(self, name: str, description: str, start_date: date, end_date: date):
         self.name = name
         self.description = description
         self.start_date = start_date
         self.end_date = end_date
 
 
-#############################
-# TODO: REVIEW DATE FORMAT!!!
-##############################
 class Certification(db.Model):
-    """자격증"""
+    """
+    Represents a certification record for a user.
+
+    Attributes:
+        * name (string) : 자격증 이름.
+        * provider (string) : 자격증 발급자.
+        * acquired_date (datetime) : 취득 날짜.
+        * user_id (integer) : 유저. Foreign Key --> User
+    """
 
     __tablename__ = "certifications"
 
@@ -146,7 +168,7 @@ class Certification(db.Model):
     acquired_date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-    def __init__(self, name: str, provider: str, date: str, user_id: int):
+    def __init__(self, name: str, provider: str, date: date, user_id: int):
         self.name = name
         self.provider = provider
         self.acquired_date = date
