@@ -54,6 +54,14 @@ class User(db.Model):
     def get_id(self):
         return str(self.id)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "email": self.email,
+            "description": self.description,
+        }
+
 
 class Education(db.Model):
     """
@@ -81,6 +89,16 @@ class Education(db.Model):
         self.major = major
         self.status_id = status_id
         self.user_id = user_id
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "school_name": self.school_name,
+            "major": self.major,
+            "status_id": self.id,
+            "education_status": self.edustatus.status_name,
+            "user_id": self.user_id,
+        }
 
 
 class EducationStatus(db.Model):
@@ -123,6 +141,14 @@ class Award(db.Model):
         self.description = description
         self.user_id = user_id
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "user_id": self.user_id,
+        }
+
 
 class Project(db.Model):
     """
@@ -140,7 +166,7 @@ class Project(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
-    description: db.Column(db.String(500), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
@@ -158,6 +184,16 @@ class Project(db.Model):
         self.start_date = start_date
         self.end_date = end_date
         self.user_id = user_id
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "start_date": self.start_date.strftime("%Y-%m-%d"),
+            "end_date": self.end_date.strftime("%Y-%m-%d"),
+            "user_id": self.user_id,
+        }
 
 
 class Certification(db.Model):
@@ -184,3 +220,11 @@ class Certification(db.Model):
         self.provider = provider
         self.acquired_date = date
         self.user_id = user_id
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "provider": self.provider,
+            "acquired_date": self.acquired_date,
+            "user_id": self.user_id,
+        }
