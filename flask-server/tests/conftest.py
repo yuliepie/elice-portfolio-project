@@ -114,16 +114,20 @@ def add_users_to_db(test_client):
 
 # Create fixture that adds user details to test database
 @pytest.fixture(scope="module")
-def add_user_details(test_client, register_test_user):
+def add_new_user_and_details():
+    user = User("grape@testing.com", "password123", "정포도")
+    db.session.add(user)
+    db.session.commit()
+
     data_raw = {
-        "edu1": ["학교1", "전공1", 1, 1],
-        "edu2": ["학교2", "전공2", 2, 1],
-        "award1": ["수상1", "수상내역", 1],
-        "award2": ["수상2", "수상내역", 1],
-        "proj1": ["프로젝트1", "프로젝트내역", date(2020, 1, 1), date(2020, 2, 2), 1],
-        "proj2": ["프로젝트2", "프로젝트내역", date(2021, 1, 1), date(2021, 2, 2), 1],
-        "cert1": ["자격증1", "발급자", date(2020, 1, 1), 1],
-        "cert2": ["자격증2", "발급자", date(2021, 2, 2), 1],
+        "edu1": ["학교1", "전공1", 1, user.id],
+        "edu2": ["학교2", "전공2", 2, user.id],
+        "award1": ["수상1", "수상내역", user.id],
+        "award2": ["수상2", "수상내역", user.id],
+        "proj1": ["프로젝트1", "프로젝트내역", date(2020, 1, 1), date(2020, 2, 2), user.id],
+        "proj2": ["프로젝트2", "프로젝트내역", date(2021, 1, 1), date(2021, 2, 2), user.id],
+        "cert1": ["자격증1", "발급자", date(2020, 1, 1), user.id],
+        "cert2": ["자격증2", "발급자", date(2021, 2, 2), user.id],
     }
 
     edu1 = Education(*data_raw["edu1"])
@@ -137,4 +141,18 @@ def add_user_details(test_client, register_test_user):
 
     db.session.add_all([edu1, edu2, aw1, aw2, proj1, proj2, cert1, cert2])
     db.session.commit()
-    yield data_raw
+    yield data_raw, user.id
+
+
+@pytest.fixture(scope="function")
+def log_into_user_for_editing(test_client, add_new_user_and_details):
+    user_id = add_new_user_and_details[1]
+    user_data = {
+        "email": "grape@testing.com",
+        "password": "password123",
+    }
+    test_client.post(
+        "/api/login", data=json.dumps(user_data), content_type="application/json"
+    )
+    yield user_id
+    test_client.get("/api/logout")
