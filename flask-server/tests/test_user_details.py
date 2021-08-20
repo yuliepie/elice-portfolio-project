@@ -4,7 +4,7 @@ from project import db
 from project.models import Education, Award, Project, Certification
 
 
-# @pytest.mark.skip
+@pytest.mark.skip
 def test_fetch_user_details(test_client, add_new_user_and_details):
     """
     GIVEN a flask test app
@@ -83,7 +83,7 @@ def test_post_valid_education_details_when_authenticated_and_authorized(
     THEN check response is success and returns id of the new education record.
     """
     userid = log_into_user_for_editing
-    new_data = ["새학교", "새전공", 1]
+    new_data = [["school_name", "새학교"], ["major", "새전공"], ["status_id", 1]]
     response = test_client.post(
         f"/api/users/{userid}/educations",
         data=json.dumps(new_data),
@@ -119,7 +119,7 @@ def test_post_education_details_when_not_authenticated(
     THEN check response is fail.
     """
     userid = add_new_user_and_details[1]
-    new_data = ["새학교", "새전공", 1]
+    new_data = [["school_name", "새학교"], ["major", "새전공"], ["status_id", 1]]
 
     response = test_client.post(
         f"/api/users/{userid}/educations",
@@ -140,7 +140,7 @@ def test_post_education_details_when_not_authorized(
     THEN check response is fail.
     """
     userid = log_into_user_for_editing
-    new_data = ["새학교", "새전공", 1]
+    new_data = [["school_name", "새학교"], ["major", "새전공"], ["status_id", 1]]
     current_app.logger.debug(f"logged_in_user: {userid}")
 
     response = test_client.post(
@@ -242,6 +242,7 @@ def test_edit_education_details_when_not_authorized(
 ###################
 # AWARDS
 ###################
+# @pytest.mark.skip
 def test_post_valid_award_details_when_authenticated_and_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -251,7 +252,7 @@ def test_post_valid_award_details_when_authenticated_and_authorized(
     THEN check response is success and returns id of the new award record.
     """
     userid = log_into_user_for_editing
-    new_data = ["새수상", "새수상내역"]
+    new_data = [["name", "새수상"], ["description", "새수상내역"]]
     response = test_client.post(
         f"/api/users/{userid}/awards",
         data=json.dumps(new_data),
@@ -272,6 +273,7 @@ def test_post_valid_award_details_when_authenticated_and_authorized(
     assert any(row["name"] == "새수상" and row["description"] == "새수상내역" for row in data)
 
 
+@pytest.mark.skip
 def test_edit_award_details_when_authenticated_and_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -303,5 +305,85 @@ def test_edit_award_details_when_authenticated_and_authorized(
     response_data = json.loads(response.get_data(as_text=True))
     user_details = response_data["user_details"]
     data = user_details["awards"]
+
+    assert any(row["name"] == new_data for row in data)
+
+
+###################
+# PROJECTS
+###################
+# @pytest.mark.skip
+def test_post_valid_project_details_when_authenticated_and_authorized(
+    test_client, log_into_user_for_editing
+):
+    """
+    GIVEN a flask test app
+    WHEN all fields for an project are posted to 'users/<:id>/projects' (POST) and the user is logged in
+    THEN check response is success and returns id of the new project record.
+    """
+    userid = log_into_user_for_editing
+    new_data = [
+        ["name", "새프로젝트"],
+        ["description", "새프로젝트입니다"],
+        ["start_date", "2020-01-01"],
+        ["end_date", "2020-12-12"],
+    ]
+    response = test_client.post(
+        f"/api/users/{userid}/projects",
+        data=json.dumps(new_data),
+        content_type="application/json",
+    )
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["result"] == 1
+    assert type(response_data["id"]) == int
+
+    # Check added correctly
+    response = test_client.get(f"/api/users/{userid}")
+    response_data = json.loads(response.get_data(as_text=True))
+    user_details = response_data["user_details"]
+    data = user_details["projects"]
+
+    assert any(
+        row["name"] == "새프로젝트"
+        and row["description"] == "새프로젝트입니다"
+        and row["start_date"] == "2020-01-01"
+        and row["end_date"] == "2020-12-12"
+        for row in data
+    )
+
+
+@pytest.mark.skip
+def test_edit_award_details_when_authenticated_and_authorized(
+    test_client, log_into_user_for_editing
+):
+    """
+    GIVEN a flask test app,
+    WHEN all some field for project is sent to 'users/<:user_id>/projects/<:id>' (PATCH) and the user is authorized,
+    THEN check response is success.
+    """
+    userid = log_into_user_for_editing
+    new_data = "또하나의프로젝트"
+
+    # Get an project record for user
+    row = db.session.query(Project).filter_by(user_id=userid).first()
+
+    edit_data = {"name": new_data}
+    response = test_client.patch(
+        f"/api/users/{userid}/projects/{row.id}",
+        data=json.dumps(edit_data),
+        content_type="application/json",
+    )
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["id"] == 1
+
+    # Check edited correctly
+    response = test_client.get(f"/api/users/{userid}")
+    response_data = json.loads(response.get_data(as_text=True))
+    user_details = response_data["user_details"]
+    data = user_details["projects"]
 
     assert any(row["name"] == new_data for row in data)

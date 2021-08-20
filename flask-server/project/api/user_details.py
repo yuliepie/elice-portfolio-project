@@ -3,6 +3,7 @@ from . import user_details_blueprint
 from flask import json, jsonify, current_app, request
 from project.models import User, Education, Award, Project, Certification
 from project import db
+from datetime import date, datetime
 
 NOT_AUTHORIZED = {"result": 0, "message": "Not authorized."}
 
@@ -28,6 +29,16 @@ def get_user_details(user_id):
     awards = [
         {"name": award.name, "description": award.description} for award in user.awards
     ]
+    current_app.logger.debug(f"Projectssss: {len(user.projects)}")
+    for proj in user.projects:
+        current_app.logger.debug(f"Project: {proj.__dict__}")
+    # for proj in user.projects:
+    #     current_app.logger.debug(f"Project id: {proj.id}")
+    #     current_app.logger.debug(f"Project name: {proj.name}")
+    #     current_app.logger.debug(f"Project description: {proj.description}")
+    #     current_app.logger.debug(f"Project startdate: {proj.start_date}")
+    #     current_app.logger.debug(f"Project end: {proj.end_date}")
+
     projects = [
         {
             "id": proj.id,
@@ -38,6 +49,15 @@ def get_user_details(user_id):
         }
         for proj in user.projects
     ]
+    current_app.logger.debug(f"Projectssss: {len(user.projects)}")
+
+    for proj in user.projects:
+        current_app.logger.debug(f"Project id: {proj.id}")
+        current_app.logger.debug(f"Project name: {proj.name}")
+        current_app.logger.debug(f"Project description: {proj.description}")
+        current_app.logger.debug(f"Project startdate: {proj.start_date}")
+        current_app.logger.debug(f"Project end: {proj.end_date}")
+
     certifications = [
         {
             "id": cert.id,
@@ -60,20 +80,44 @@ def get_user_details(user_id):
     return jsonify(result)
 
 
+def parse_date_helper(data):
+    parsed = []
+    for prop in data:
+        if prop[0].endswith("_date"):
+            try:
+                # current_app.logger.debug(f"trying to parse: {prop[1]}")
+                date = datetime.strptime(prop[1], "%Y-%m-%d").date()
+                # current_app.logger.debug(f"parsed date: {type(date)}")
+                parsed.append(date)
+            except ValueError:
+                # current_app.logger.debug(f"failed to parse: {prop[1]}")
+                parsed.append(prop[1])
+                continue
+        else:
+            parsed.append(prop[1])
+
+    current_app.logger.debug(f"parsed list: {parsed}")
+    return parsed
+
+
 def post_details_helper(new_data, model, current_user_id):
     try:
-        print("here")
+        parsed = parse_date_helper(new_data)
+        current_app.logger.debug(f"parsed data: {parsed}")
 
-        new_detail = model(*new_data, current_user_id)
+        new_detail = model(*parsed, current_user_id)
+        current_app.logger.debug(f"Created Model: {new_detail.__dict__}")
         db.session.add(new_detail)
         db.session.commit()
-        current_app.logger.debug(f"model name: {model.__name__}")
+        if type(new_detail).__name__ == "Project":
+            current_app.logger.debug(f"Commited Model: {new_detail.__dict__}")
+
         data_return = {
             "result": 1,
             "message": f"{type(new_detail).__name__} created.",
             "id": new_detail.id,
         }
-        current_app.logger.debug(f"message: {data_return['message']}")
+        current_app.logger.debug(f"Added Model: {data_return['message']}")
         return jsonify(data_return)
     except:
         db.session.rollback()
@@ -96,7 +140,6 @@ def post_education_detail(user_id):
     GETS: {school_name, major, status}
     RETURNS: {result: 1, message: "Education created.", education_id: 1}
     """
-    current_app.logger.debug(f"user_id: {user_id}, current_user: {current_user.id}")
     if not user_id_authorized(user_id, current_user.id):
         return jsonify(NOT_AUTHORIZED), 401
 
@@ -237,3 +280,35 @@ def edit_award_detail(user_id, id):
 
     edit_data = request.json
     return edit_details_helper(edit_data, Award, id)
+
+
+@user_details_blueprint.route("/users/<int:user_id>/projects", methods=["POST"])
+@login_required
+def post_project_detail(user_id):
+    """
+    GETS: [name, description, start_date, end_date]
+    RETURNS: {result: 1, message: "Project created.", id: 1}
+    """
+    if not user_id_authorized(user_id, current_user.id):
+        return jsonify(NOT_AUTHORIZED), 401
+
+    new_data = request.json
+    return post_details_helper(new_data, Project, current_user.id)
+
+
+@user_details_blueprint.route(
+    "/users/<int:user_id>/projects/<int:id>", methods=["PATCH"]
+)
+@login_required
+def edit_project_detail(user_id, id):
+    """
+    GETS:   { (ANY) name, description, start_date, end_date }
+    RETURNS: {result: 1, message: "Project updated.", id: 1}
+    """
+    if not user_id_authorized(user_id, current_user.id):
+        return jsonify(NOT_AUTHORIZED), 401
+    if not detail_id_authorized_for_user(Project, current_user.id, id):
+        return jsonify(NOT_AUTHORIZED), 401
+
+    edit_data = request.json
+    return edit_details_helper(edit_data, Project, id)
