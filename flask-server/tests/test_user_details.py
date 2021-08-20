@@ -4,7 +4,6 @@ from project import db
 from project.models import Education, Award, Project, Certification
 
 
-@pytest.mark.skip
 def test_fetch_user_details(test_client, add_new_user_and_details):
     """
     GIVEN a flask test app
@@ -73,7 +72,6 @@ def test_fetch_user_details(test_client, add_new_user_and_details):
     )
 
 
-# @pytest.mark.skip
 def test_post_valid_education_details_when_authenticated_and_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -109,7 +107,11 @@ def test_post_valid_education_details_when_authenticated_and_authorized(
     )
 
 
-# @pytest.mark.skip
+###################
+# EDUCATION
+###################
+
+
 def test_post_education_details_when_not_authenticated(
     test_client, add_new_user_and_details
 ):
@@ -130,7 +132,6 @@ def test_post_education_details_when_not_authenticated(
     assert response.status_code == 401
 
 
-# @pytest.mark.skip
 def test_post_education_details_when_not_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -156,7 +157,6 @@ def test_post_education_details_when_not_authorized(
     assert response_data["message"] == "Not authorized."
 
 
-# @pytest.mark.skip
 def test_edit_education_details_when_authenticated_and_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -195,7 +195,6 @@ def test_edit_education_details_when_authenticated_and_authorized(
     assert any(edu["school_name"] == new_school_name for edu in educations)
 
 
-# @pytest.mark.skip
 def test_edit_education_details_when_not_authenticated(
     test_client, add_new_user_and_details
 ):
@@ -216,7 +215,6 @@ def test_edit_education_details_when_not_authenticated(
     assert response.status_code == 401
 
 
-# @pytest.mark.skip
 def test_edit_education_details_when_not_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -242,7 +240,6 @@ def test_edit_education_details_when_not_authorized(
 ###################
 # AWARDS
 ###################
-# @pytest.mark.skip
 def test_post_valid_award_details_when_authenticated_and_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -273,7 +270,6 @@ def test_post_valid_award_details_when_authenticated_and_authorized(
     assert any(row["name"] == "새수상" and row["description"] == "새수상내역" for row in data)
 
 
-@pytest.mark.skip
 def test_edit_award_details_when_authenticated_and_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -312,7 +308,6 @@ def test_edit_award_details_when_authenticated_and_authorized(
 ###################
 # PROJECTS
 ###################
-# @pytest.mark.skip
 def test_post_valid_project_details_when_authenticated_and_authorized(
     test_client, log_into_user_for_editing
 ):
@@ -328,6 +323,7 @@ def test_post_valid_project_details_when_authenticated_and_authorized(
         ["start_date", "2020-01-01"],
         ["end_date", "2020-12-12"],
     ]
+
     response = test_client.post(
         f"/api/users/{userid}/projects",
         data=json.dumps(new_data),
@@ -345,6 +341,13 @@ def test_post_valid_project_details_when_authenticated_and_authorized(
     user_details = response_data["user_details"]
     data = user_details["projects"]
 
+    for proj in data:
+        current_app.logger.debug(f"Project id: {proj['id']}")
+        current_app.logger.debug(f"Project name: {proj['name']}")
+        current_app.logger.debug(f"Project description: {proj['description']}")
+        current_app.logger.debug(f"Project startdate: {proj['start_date']}")
+        current_app.logger.debug(f"Project end: {proj['end_date']}")
+
     assert any(
         row["name"] == "새프로젝트"
         and row["description"] == "새프로젝트입니다"
@@ -354,8 +357,7 @@ def test_post_valid_project_details_when_authenticated_and_authorized(
     )
 
 
-@pytest.mark.skip
-def test_edit_award_details_when_authenticated_and_authorized(
+def test_edit_project_details_when_authenticated_and_authorized(
     test_client, log_into_user_for_editing
 ):
     """
@@ -385,5 +387,81 @@ def test_edit_award_details_when_authenticated_and_authorized(
     response_data = json.loads(response.get_data(as_text=True))
     user_details = response_data["user_details"]
     data = user_details["projects"]
+
+    assert any(row["name"] == new_data for row in data)
+
+
+###################
+# CERTIFICATIONS
+###################
+def test_post_valid_cert_details_when_authenticated_and_authorized(
+    test_client, log_into_user_for_editing
+):
+    """
+    GIVEN a flask test app
+    WHEN all fields for a certification are posted to 'users/<:id>/certifications' (POST) and the user is logged in
+    THEN check response is success and returns id of the new certification record.
+    """
+    userid = log_into_user_for_editing
+    new_data = [
+        ["name", "새자격증"],
+        ["provider", "자격증발급자"],
+        ["acquired_date", "2020-01-01"],
+    ]
+    response = test_client.post(
+        f"/api/users/{userid}/certifications",
+        data=json.dumps(new_data),
+        content_type="application/json",
+    )
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["result"] == 1
+    assert type(response_data["id"]) == int
+
+    # Check added correctly
+    response = test_client.get(f"/api/users/{userid}")
+    response_data = json.loads(response.get_data(as_text=True))
+    user_details = response_data["user_details"]
+    data = user_details["certifications"]
+
+    assert any(
+        row["name"] == "새자격증"
+        and row["provider"] == "자격증발급자"
+        and row["acquired_date"] == "2020-01-01"
+        for row in data
+    )
+
+
+def test_edit_certification_details_when_authenticated_and_authorized(
+    test_client, log_into_user_for_editing
+):
+    """
+    GIVEN a flask test app,
+    WHEN some field for a certification is sent to 'users/<:user_id>/certifications/<:id>' (PATCH) and the user is authorized,
+    THEN check response is success.
+    """
+    userid = log_into_user_for_editing
+    new_data = "수정할자격증"
+
+    # Get an project record for user
+    row = db.session.query(Project).filter_by(user_id=userid).first()
+
+    edit_data = {"name": new_data}
+    response = test_client.patch(
+        f"/api/users/{userid}/certifications/{row.id}",
+        data=json.dumps(edit_data),
+        content_type="application/json",
+    )
+    response_data = json.loads(response.get_data(as_text=True))
+
+    assert response.status_code == 200
+    assert response_data["id"] == 1
+
+    # Check edited correctly
+    response = test_client.get(f"/api/users/{userid}")
+    response_data = json.loads(response.get_data(as_text=True))
+    user_details = response_data["user_details"]
+    data = user_details["certifications"]
 
     assert any(row["name"] == new_data for row in data)

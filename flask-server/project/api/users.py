@@ -95,7 +95,7 @@ def view_users():
 #### cli commands ####
 ######################
 
-
+# flask users create_default_users
 @users_blueprint.cli.command("create_default_users")
 def create_default_users():
     """Create three new users and add them to the database"""
