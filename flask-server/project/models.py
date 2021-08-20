@@ -225,6 +225,6 @@ class Certification(db.Model):
         return {
             "name": self.name,
             "provider": self.provider,
-            "acquired_date": self.acquired_date,
+            "acquired_date": self.acquired_date.strftime("%Y-%m-%d"),
             "user_id": self.user_id,
         }
