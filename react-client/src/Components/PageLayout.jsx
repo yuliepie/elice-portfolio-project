@@ -1,18 +1,20 @@
 import Navigation from "./Navigation";
 import styled from "styled-components";
+import { Layout } from "antd";
 
 export default function PageLayout({ children }) {
+  const { Header, Content, Footer } = Layout;
   return (
-    <Layout>
-      <header>
+    <Layout className="layout">
+      <Header>
         <Navigation />
-      </header>
-      <main>{children}</main>
+      </Header>
+      <Layout className="layout">
+        <Content className="content">
+          <main className="site-layout-content">{children}</main>
+        </Content>
+      </Layout>
+      <Footer className="footer">Footer</Footer>
     </Layout>
   );
 }
-
-const Layout = styled.div`
-  height: 100vh;
-  background-color: pink;
-`;

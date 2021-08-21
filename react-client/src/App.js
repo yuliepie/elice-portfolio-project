@@ -3,6 +3,7 @@ import LoginPage from "./Views/LoginView/LoginPage";
 import "./App.css";
 import SignUpPage from "./Views/SignUpView/SignUpPage";
 import UserDetailPage from "./Views/UserDetailView/UserDetailPage";
+import UserListPage from "./Views/UserListView/UserListPage";
 
 function App() {
   return (
@@ -14,8 +15,11 @@ function App() {
         <Route path="/signup">
           <SignUpPage />
         </Route>
-        <Route path="/c">
+        <Route path="/myPage">
           <UserDetailPage />
+        </Route>
+        <Route path="/">
+          <UserListPage />
         </Route>
       </Switch>
     </BrowserRouter>

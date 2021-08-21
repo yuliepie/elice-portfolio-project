@@ -1,13 +1,23 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
+import { Menu } from "antd";
 
 export default function Navigation() {
   return (
-    <Nav>
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/about">About</NavLink>
-      <NavLink to="/contact">Contact</NavLink>
-    </Nav>
+    <>
+      <div className="logo"></div>
+      <Menu theme="dark" mode="horizontal">
+        <Menu.Item key="Network">
+          <NavLink to="/">Networks</NavLink>
+        </Menu.Item>
+        <Menu.Item key="MyPage">
+          <NavLink to="/myPage">My Page</NavLink>
+        </Menu.Item>
+        <Menu.Item key="Login">
+          <NavLink to="/login">Log In</NavLink>
+        </Menu.Item>
+      </Menu>
+    </>
   );
 }
 
