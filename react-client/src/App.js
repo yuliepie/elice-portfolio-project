@@ -1,13 +1,22 @@
 import "./App.css";
 import { AuthProvider } from "./Contexts/authContext";
 import Routes from "./Routes/Routes";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function App() {
-  // TODO: don't get/save user from session storage (might be out of sync with server)
-  // TODO: Send a request to server to get current logged in user's details
-  const user = sessionStorage.getItem("user");
+  const [currentUser, setCurrentUser] = useState(null); // Check current user with server
+  useEffect(() => {
+    axios.get("/api/whoami").then((resp) => {
+      if (resp) {
+        setCurrentUser(resp.data);
+        console.log("Current user: ", currentUser);
+      }
+    });
+  }, []);
+
   return (
-    <AuthProvider user={user}>
+    <AuthProvider currentUser={currentUser} setCurrentUser={setCurrentUser}>
       <Routes />
     </AuthProvider>
   );

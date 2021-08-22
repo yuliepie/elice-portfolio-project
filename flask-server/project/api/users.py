@@ -1,5 +1,5 @@
 from . import users_blueprint
-from flask import request, jsonify, current_app
+from flask import json, request, jsonify, current_app
 from project.models import User
 from project import db
 from sqlalchemy.exc import IntegrityError
@@ -58,7 +58,7 @@ def login():
             "message": "login success",
         }
 
-    return jsonify({"result": 0, "message": "invalid credentials"})
+    return jsonify({"result": 0, "message": "invalid credentials"}), 401
 
 
 # Logout user
@@ -89,6 +89,18 @@ def view_users():
             "users": result,
         }
     )
+
+
+@users_blueprint.route("/whoami")
+def check_current_user():
+    if current_user.is_authenticated:
+        return jsonify(
+            {
+                "id": current_user.id,
+                "email": current_user.email,
+                "name": current_user.name,
+            }
+        )
 
 
 ######################

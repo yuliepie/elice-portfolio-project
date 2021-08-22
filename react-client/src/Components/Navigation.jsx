@@ -10,10 +10,9 @@ export default function Navigation() {
     try {
       sessionStorage.setItem("user", "");
       await axios.get("/api/logout");
-      console.log("logged out user.");
+      alert("로그아웃 되었습니다.");
 
       setCurrentUser(null);
-      sessionStorage.setItem("user", "");
       history.push("/login");
     } catch (e) {
       console.log("logout failed: " + e);
@@ -29,7 +28,7 @@ export default function Navigation() {
             <NavLink to="/">네트워크</NavLink>
           </div>
           <div className="w-20 border-yellow-100 border-2">
-            <NavLink to="/">마이페이지</NavLink>
+            <NavLink to={`/users/${currentUser.id}`}>마이페이지</NavLink>
           </div>
           <div className="w-20 border-yellow-100 border-2">
             <button onClick={handleLogout}>로그아웃</button>

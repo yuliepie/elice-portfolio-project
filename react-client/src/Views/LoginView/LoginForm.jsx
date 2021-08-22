@@ -23,15 +23,15 @@ export default function LoginForm() {
       .post("/api/login", loginDetails)
       .then((response) => {
         const { user } = response.data;
-        console.log(user);
+        console.log("user logged in: ", user);
+        alert("로그인 성공!");
 
         setCurrentUser(user);
-        sessionStorage.setItem("user", user);
         history.push("/");
       })
-      //TODO: Set Flask to return 404 error when login fail.
       .catch((err) => {
         console.log(err);
+        alert("잘못된 비밀번호입니다.");
       });
   };
   return (
