@@ -1,6 +1,39 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../Contexts/authContext";
 
 export default function LoginForm() {
+  const history = useHistory();
+  const { setCurrentUser } = useAuth();
+  const [loginDetails, setLoginDetails] = useState({ email: "", password: "" });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    const newLoginDetail = { ...loginDetails };
+    newLoginDetail[name] = value;
+    setLoginDetails(newLoginDetail);
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .post("/api/login", loginDetails)
+      .then((response) => {
+        const { user } = response.data;
+        console.log(user);
+
+        setCurrentUser(user);
+        sessionStorage.setItem("user", user);
+        history.push("/");
+      })
+      //TODO: Set Flask to return 404 error when login fail.
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <div>
       <div>
@@ -9,19 +42,29 @@ export default function LoginForm() {
             <label className="block">
               <span className="text-gray-700">아이디 (이메일):</span>
               <input
+                name="email"
                 type="email"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="form-style"
                 placeholder="john@example.com"
+                required
+                onChange={handleInputChange}
               />
             </label>
             <label className="block">
               <span className="text-gray-700">비밀번호:</span>
               <input
+                name="password"
                 type="password"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="form-style"
+                required
+                onChange={handleInputChange}
               />
             </label>
-            <button type="submit" className="bg-blue-200 w-20 p-2 mx-auto">
+            <button
+              type="subimit"
+              className="bg-blue-200 w-20 p-2 mx-auto"
+              onClick={handleLoginSubmit}
+            >
               로그인
             </button>
           </div>

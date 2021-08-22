@@ -1,28 +1,15 @@
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import LoginPage from "./Views/LoginView/LoginPage";
 import "./App.css";
-import SignUpPage from "./Views/SignUpView/SignUpPage";
-import UserDetailPage from "./Views/UserDetailView/UserDetailPage";
-import UserListPage from "./Views/UserListView/UserListPage";
+import { AuthProvider } from "./Contexts/authContext";
+import Routes from "./Routes/Routes";
 
 function App() {
+  // TODO: don't get/save user from session storage (might be out of sync with server)
+  // TODO: Send a request to server to get current logged in user's details
+  const user = sessionStorage.getItem("user");
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="/signup">
-          <SignUpPage />
-        </Route>
-        <Route path="/myPage">
-          <UserDetailPage />
-        </Route>
-        <Route path="/">
-          <UserListPage />
-        </Route>
-      </Switch>
-    </BrowserRouter>
+    <AuthProvider user={user}>
+      <Routes />
+    </AuthProvider>
   );
 }
 
