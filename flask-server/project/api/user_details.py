@@ -206,7 +206,7 @@ def post_project_detail(user_id):
         return jsonify(NOT_AUTHORIZED), 401
 
     new_data = request.json
-    return post_details_helper(new_data, Project, 1)
+    return post_details_helper(new_data, Project, current_user.id)
 
 
 @user_details_blueprint.route(
