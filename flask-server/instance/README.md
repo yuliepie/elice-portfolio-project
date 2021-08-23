@@ -1,0 +1,1 @@
+This folder is used to store run-time data, such as log files or SQLite db files for testing.
