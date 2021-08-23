@@ -1,8 +1,6 @@
-from flask import Flask
+from project import create_app
 
-app = Flask(__name__)
-
-
-@app.route('/')
-def index():
-    return "Hello World!"
+# Call the application factory function to
+# create a Flask application instance.
+# Uses development configuration by default.
+app = create_app()

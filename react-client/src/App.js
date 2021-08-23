@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { AuthProvider } from "./Contexts/authContext";
+import Routes from "./Routes/Routes";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null); // Check current user with server
+  useEffect(() => {
+    axios.get("/api/whoami").then((resp) => {
+      if (resp) {
+        setCurrentUser(resp.data);
+        console.log("Current user: ", currentUser);
+      }
+    });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider currentUser={currentUser} setCurrentUser={setCurrentUser}>
+      <Routes />
+    </AuthProvider>
   );
 }
 
