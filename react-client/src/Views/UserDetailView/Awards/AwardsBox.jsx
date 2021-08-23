@@ -1,10 +1,10 @@
 import { useState } from "react";
+import AwardDetail from "./AwardDetail";
+import AwardForm from "./AwardForm";
 import UserDetailsBox from "../UserDetailsBox";
-import EducationDetail from "./EducationDetail";
-import EducationForm from "./EducationForm";
 
-export default function EducationsBox({
-  educations,
+export default function AwardsBox({
+  awards,
   pageInEditMode,
   setBoxesInEdit,
   handleChange,
@@ -15,7 +15,7 @@ export default function EducationsBox({
 
   return (
     <UserDetailsBox
-      title={"학력"}
+      title={"수상 경력"}
       pageInEditMode={pageInEditMode}
       isEditing={isEditing}
       setIsEditing={setIsEditing}
@@ -23,16 +23,14 @@ export default function EducationsBox({
       handleAdd={handleAdd}
       validate={validate}
     >
-      {educations &&
+      {awards &&
         (!isEditing
-          ? educations.map((edu) => (
-              <EducationDetail key={edu.id} education={edu} />
-            ))
-          : educations.map((edu) => (
-              <EducationForm
+          ? awards.map((award) => <AwardDetail key={award.id} award={award} />)
+          : awards.map((award) => (
+              <AwardForm
                 handleChange={handleChange}
-                key={edu.id}
-                education={edu}
+                key={award.id}
+                award={award}
               />
             )))}
     </UserDetailsBox>

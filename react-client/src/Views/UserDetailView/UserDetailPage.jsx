@@ -4,7 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import EducationsBox from "./Education/EducationsBox";
-import EducationStatus from "./Education/EducationStatus";
+import AwardsBox from "./Awards/AwardsBox";
 
 export default function UserDetailPage() {
   const [description, setDescription] = useState(null);
@@ -18,11 +18,8 @@ export default function UserDetailPage() {
     };
   };
 
-  // Changed Details - for PATCH request
-  const changedDetails = useRef(createInitialState());
-
-  // New details - for POST request
-  const newDetails = useRef(createInitialState());
+  const changedDetails = useRef(createInitialState()); // Changed Details - for PATCH request
+  const newDetails = useRef(createInitialState()); // New details - for POST request
 
   // API Fetch
   async function fetchUserDetails() {
@@ -30,8 +27,7 @@ export default function UserDetailPage() {
       const response = await axios.get(`/api/users/${id}`);
       const { user_details } = response.data;
       setEducations(user_details.educations);
-      console.log(response.data);
-      console.log(educations);
+      setAwards(user_details.awards);
     } catch (e) {
       console.log("error in getting user details:", e.message);
     }
@@ -50,6 +46,20 @@ export default function UserDetailPage() {
 
   const [pageInEditMode, setPageInEditMode] = useState(false);
   const [boxesInEdit, setBoxesInEdit] = useState(0);
+
+  // Validation check that forms are filled
+  const validate = (collection) => {
+    let isValid = true;
+    collection.forEach((item) => {
+      for (const prop in item) {
+        if (!item[prop]) {
+          isValid = false;
+          break;
+        }
+      }
+    });
+    return isValid;
+  };
 
   //========================
   // Change Handlers
@@ -87,20 +97,33 @@ export default function UserDetailPage() {
       school_name: "",
       major: "",
       status_id: "1",
-      user_id: currentUser.id,
     };
     setEducations((prevEdus) => [...prevEdus, newEdu]);
     newDetails.current.educations.push(newEdu);
   };
 
+  const handleNewAward = () => {
+    const newAward = {
+      id: "n-" + new Date().getTime().toString(),
+      name: "",
+      description: "",
+    };
+
+    setAwards((prevAwards) => [...prevAwards, newAward]);
+    newDetails.current.awards.push(newAward);
+  };
+
+  //===================
+  // ON SAVE
+  //===================
+
   const handleSave = () => {
     if (!boxesInEdit) {
-      console.log("NEW: ");
-      console.log(newDetails.current.educations);
-      console.log("CHANGED:");
-      console.log(changedDetails.current.educations);
-      // Axios post
+      //--------
+      // POST:
+      //--------
       const promises = [];
+
       newDetails.current.educations.forEach((edu) => {
         const formattedEdu = [];
         formattedEdu.push(["school_name", edu.school_name]);
@@ -109,9 +132,26 @@ export default function UserDetailPage() {
         promises.push(axios.post(`/api/users/${id}/educations`, formattedEdu));
       });
 
+      newDetails.current.awards.forEach((award) => {
+        const formattedAwards = [];
+        formattedAwards.push(["name", award.name]);
+        formattedAwards.push(["description", award.description]);
+        promises.push(axios.post(`/api/users/${id}/awards`, formattedAwards));
+      });
+
+      //---------
+      // PATCH:
+      //---------
+
       changedDetails.current.educations.forEach((edu) => {
         promises.push(
           axios.patch(`/api/users/${id}/educations/${edu.id}`, edu)
+        );
+      });
+
+      changedDetails.current.awards.forEach((award) => {
+        promises.push(
+          axios.patch(`/api/users/${id}/awards/${award.id}`, award)
         );
       });
 
@@ -143,6 +183,7 @@ export default function UserDetailPage() {
             pageInEditMode={pageInEditMode}
             setBoxesInEdit={setBoxesInEdit}
             handleAdd={handleNewEducation}
+            validate={() => validate(educations)}
             handleChange={(id, name, value) =>
               handleChange(
                 id,
@@ -151,6 +192,23 @@ export default function UserDetailPage() {
                 setEducations,
                 newDetails.current.educations,
                 changedDetails.current.educations
+              )
+            }
+          />
+          <AwardsBox
+            awards={awards}
+            pageInEditMode={pageInEditMode}
+            setBoxesInEdit={setBoxesInEdit}
+            handleAdd={handleNewAward}
+            validate={() => validate(awards)}
+            handleChange={(id, name, value) =>
+              handleChange(
+                id,
+                name,
+                value,
+                setAwards,
+                newDetails.current.awards,
+                changedDetails.current.awards
               )
             }
           />
