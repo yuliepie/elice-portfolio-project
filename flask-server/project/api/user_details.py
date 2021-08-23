@@ -258,3 +258,70 @@ def edit_certification_detail(user_id, id):
 
     edit_data = request.json
     return edit_details_helper(edit_data, Certification, id)
+
+
+####################
+# CLI COMMANDS
+####################
+
+# flask user_details create_educations
+@user_details_blueprint.cli.command("create_educations")
+def create_educations():
+    db.session.query(Education).delete()
+    db.session.commit()
+    edu1 = Education("하이대학교", "컴공과", 1, 1)
+    edu2 = Education("비비대학교", "디자인과", 2, 1)
+    edu3 = Education("로마대학교", "로마과", 4, 2)
+    db.session.add_all([edu1, edu2, edu3])
+    db.session.commit()
+
+
+@user_details_blueprint.cli.command("create_awards")
+def create_educations():
+    db.session.query(Award).delete()
+    db.session.commit()
+    aw1 = Award("바락오바마상", "세계문화와 인종간의 화합에 기여해 2007년에 수상.", 1)
+    aw2 = Award("박인비상", "골프 신인 루키로 투어를 제패한걸 기념하여 얻은 상. 2015년에 수상.", 1)
+    aw3 = Award("요리왕상", "인스타에 소문난 요리들을 여럿 올려 시청자 투표로 얻은 인기상. 2020년에 수상", 2)
+    db.session.add_all([aw1, aw2, aw3])
+    db.session.commit()
+
+
+@user_details_blueprint.cli.command("create_projects")
+def create_projects():
+    db.session.query(Project).delete()
+    db.session.commit()
+    proj1 = Project(
+        "초코프로젝트",
+        "전세계 초콜릿을 비교하며 장인 초콜릿샵을 추천해주는 어플 제작",
+        date(2019, 3, 20),
+        date(2019, 11, 11),
+        1,
+    )
+    proj2 = Project(
+        "원피스 프로젝트",
+        "전세계 원피스 팬들의 커뮤니티 사이트 제작. 프로덕트 매니저를 겸함.",
+        date(2020, 6, 1),
+        date(2020, 8, 27),
+        1,
+    )
+    proj3 = Project(
+        "아컴호러 프로젝트",
+        "유명한 공포 테이블탑rpg형 보드게임을 온라인으로 클론.",
+        date(2018, 2, 12),
+        date(2019, 9, 17),
+        2,
+    )
+    db.session.add_all([proj1, proj2, proj3])
+    db.session.commit()
+
+
+@user_details_blueprint.cli.command("create_certifications")
+def create_certs():
+    db.session.query(Certification).delete()
+    db.session.commit()
+    cert1 = Certification("요리사자격증", "국가요리시험원", date(2019, 7, 25), 1)
+    cert2 = Certification("모델자격증", "국제모델연맹", date(2020, 12, 5), 1)
+    cert3 = Certification("비행자격증", "한국비행자격공단", date(2011, 2, 15), 2)
+    db.session.add_all([cert1, cert2, cert3])
+    db.session.commit()
