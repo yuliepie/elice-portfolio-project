@@ -223,6 +223,7 @@ class Certification(db.Model):
 
     def to_dict(self):
         return {
+            "id": self.id,
             "name": self.name,
             "provider": self.provider,
             "acquired_date": self.acquired_date.strftime("%Y-%m-%d"),

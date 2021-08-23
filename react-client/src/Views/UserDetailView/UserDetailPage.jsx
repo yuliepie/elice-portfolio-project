@@ -178,6 +178,16 @@ export default function UserDetailPage() {
         promises.push(axios.post(`/api/users/${id}/projects`, formattedProj));
       });
 
+      newDetails.current.certs.forEach((cert) => {
+        const formattedCert = [];
+        formattedCert.push(["name", cert.name]);
+        formattedCert.push(["provider", cert.provider]);
+        formattedCert.push(["acquired_date", cert.acquired_date]);
+        promises.push(
+          axios.post(`/api/users/${id}/certifications`, formattedCert)
+        );
+      });
+
       //---------
       // PATCH:
       //---------
@@ -197,6 +207,12 @@ export default function UserDetailPage() {
       changedDetails.current.projects.forEach((proj) => {
         promises.push(
           axios.patch(`/api/users/${id}/projects/${proj.id}`, proj)
+        );
+      });
+
+      changedDetails.current.certs.forEach((cert) => {
+        promises.push(
+          axios.patch(`/api/users/${id}/certifications/${cert.id}`, cert)
         );
       });
 
