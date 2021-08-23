@@ -5,16 +5,19 @@ import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import EducationsBox from "./Education/EducationsBox";
 import AwardsBox from "./Awards/AwardsBox";
+import ProjectsBox from "./Projects/ProjectsBox";
 
 export default function UserDetailPage() {
   const [description, setDescription] = useState(null);
   const [educations, setEducations] = useState(null);
   const [awards, setAwards] = useState(null);
+  const [projects, setProjects] = useState(null);
 
   const createInitialState = () => {
     return {
       educations: [],
       awards: [],
+      projects: [],
     };
   };
 
@@ -28,6 +31,7 @@ export default function UserDetailPage() {
       const { user_details } = response.data;
       setEducations(user_details.educations);
       setAwards(user_details.awards);
+      setProjects(user_details.projects);
     } catch (e) {
       console.log("error in getting user details:", e.message);
     }
@@ -108,9 +112,20 @@ export default function UserDetailPage() {
       name: "",
       description: "",
     };
-
     setAwards((prevAwards) => [...prevAwards, newAward]);
     newDetails.current.awards.push(newAward);
+  };
+
+  const handleNewProject = () => {
+    const newProj = {
+      id: "n-" + new Date().getTime().toString(),
+      name: "",
+      description: "",
+      start_date: "",
+      end_date: "",
+    };
+    setProjects((prevProjs) => [...prevProjs, newProj]);
+    newDetails.current.projects.push(newProj);
   };
 
   //===================
@@ -133,10 +148,19 @@ export default function UserDetailPage() {
       });
 
       newDetails.current.awards.forEach((award) => {
-        const formattedAwards = [];
-        formattedAwards.push(["name", award.name]);
-        formattedAwards.push(["description", award.description]);
-        promises.push(axios.post(`/api/users/${id}/awards`, formattedAwards));
+        const formattedAward = [];
+        formattedAward.push(["name", award.name]);
+        formattedAward.push(["description", award.description]);
+        promises.push(axios.post(`/api/users/${id}/awards`, formattedAward));
+      });
+
+      newDetails.current.projects.forEach((proj) => {
+        const formattedProj = [];
+        formattedProj.push(["name", proj.name]);
+        formattedProj.push(["description", proj.description]);
+        formattedProj.push(["start_date", proj.start_date]);
+        formattedProj.push(["end_date", proj.end_date]);
+        promises.push(axios.post(`/api/users/${id}/projects`, formattedProj));
       });
 
       //---------
@@ -152,6 +176,12 @@ export default function UserDetailPage() {
       changedDetails.current.awards.forEach((award) => {
         promises.push(
           axios.patch(`/api/users/${id}/awards/${award.id}`, award)
+        );
+      });
+
+      changedDetails.current.projects.forEach((proj) => {
+        promises.push(
+          axios.patch(`/api/users/${id}/projects/${proj.id}`, proj)
         );
       });
 
@@ -209,6 +239,23 @@ export default function UserDetailPage() {
                 setAwards,
                 newDetails.current.awards,
                 changedDetails.current.awards
+              )
+            }
+          />
+          <ProjectsBox
+            projects={projects}
+            pageInEditMode={pageInEditMode}
+            setBoxesInEdit={setBoxesInEdit}
+            handleAdd={handleNewProject}
+            validate={() => validate(projects)}
+            handleChange={(id, name, value) =>
+              handleChange(
+                id,
+                name,
+                value,
+                setProjects,
+                newDetails.current.projects,
+                changedDetails.current.projects
               )
             }
           />

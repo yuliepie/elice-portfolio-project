@@ -4,7 +4,6 @@ export default function EducationForm({ education, handleChange }) {
       <input
         type="text"
         className="details-form-style"
-        required
         placeholder="학교이름"
         value={education.school_name}
         onChange={(e) =>
