@@ -95,7 +95,7 @@ class Education(db.Model):
             "id": self.id,
             "school_name": self.school_name,
             "major": self.major,
-            "status_id": self.id,
+            "status_id": self.status_id,
             "education_status": self.edustatus.status_name,
             "user_id": self.user_id,
         }

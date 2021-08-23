@@ -40,10 +40,12 @@ def post_details_helper(new_data, model, current_user_id):
     """
     try:
         parsed = parse_date_helper(new_data)
+        print("parsed: ", parsed)
         new_detail = model(*parsed, current_user_id)
+        print(new_detail.status_id)
         db.session.add(new_detail)
         db.session.commit()
-        current_app.logger.debug(f"Created Model: {new_detail.__dict__}")
+        current_app.logger.debug(f"Created Model: {new_detail.to_dict()}")
 
         data_return = {
             "result": 1,
@@ -141,6 +143,7 @@ def post_education_detail(user_id):
         return jsonify(NOT_AUTHORIZED), 401
 
     new_data = request.json
+    print("NEW DATA", new_data)
     return post_details_helper(new_data, Education, current_user.id)
 
 
