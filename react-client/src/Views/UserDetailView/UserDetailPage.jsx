@@ -11,17 +11,18 @@ export default function UserDetailPage() {
   const [educations, setEducations] = useState(null);
   const [awards, setAwards] = useState(null);
 
+  const createInitialState = () => {
+    return {
+      educations: [],
+      awards: [],
+    };
+  };
+
   // Changed Details - for PATCH request
-  const changedDetails = useRef({
-    educations: [],
-    awards: [],
-  });
+  const changedDetails = useRef(createInitialState());
 
   // New details - for POST request
-  const newDetails = useRef({
-    educations: [],
-    awards: [],
-  });
+  const newDetails = useRef(createInitialState());
 
   // API Fetch
   async function fetchUserDetails() {
@@ -51,56 +52,28 @@ export default function UserDetailPage() {
   const [boxesInEdit, setBoxesInEdit] = useState(0);
 
   //========================
-  // Update Handlers
+  // Change Handlers
   //========================
-  // const handleEducationChange = (id, name, value) => {
-  //   setEducations((prevEdus) => {
-  //     return prevEdus.map((edu) =>
-  //       edu.id === id ? { ...edu, [name]: value } : edu
-  //     );
-  //   });
 
-  //   // Check if new/changed education:
-  //   if (id[0] === "n") {
-  //     const edu = newDetails.current.educations.filter(
-  //       (edu) => edu.id === id
-  //     )[0];
-  //     edu[name] = value;
-  //   } else {
-  //     const edu = changedDetails.current.educations.filter(
-  //       (edu) => edu.id === id
-  //     )[0];
-  //     if (edu) {
-  //       edu[name] = value;
-  //     } else {
-  //       changedDetails.current.educations.push({
-  //         id: id,
-  //         [name]: value,
-  //       });
-  //     }
-  //   }
-  // };
-  const handleChange = (id, name, value, setState) => {
-    setState((prev) => {
-      return prevEdus.map((edu) =>
-        edu.id === id ? { ...edu, [name]: value } : edu
+  // Common Change Handler for all boxes
+  const handleChange = (id, name, value, setState, newList, changedList) => {
+    setState((prevList) => {
+      return prevList.map((item) =>
+        item.id === id ? { ...item, [name]: value } : item
       );
     });
 
-    // Check if new/changed education:
     if (id[0] === "n") {
-      const edu = newDetails.current.educations.filter(
-        (edu) => edu.id === id
-      )[0];
-      edu[name] = value;
+      // If NEW ITEM:
+      const item = newList.filter((item) => item.id === id)[0];
+      item[name] = value;
     } else {
-      const edu = changedDetails.current.educations.filter(
-        (edu) => edu.id === id
-      )[0];
-      if (edu) {
-        edu[name] = value;
+      // If CHANGED ITEM:
+      const item = changedList.filter((item) => item.id === id)[0];
+      if (item) {
+        item[name] = value;
       } else {
-        changedDetails.current.educations.push({
+        changedList.push({
           id: id,
           [name]: value,
         });
@@ -122,6 +95,10 @@ export default function UserDetailPage() {
 
   const handleSave = () => {
     if (!boxesInEdit) {
+      console.log("NEW: ");
+      console.log(newDetails.current.educations);
+      console.log("CHANGED:");
+      console.log(changedDetails.current.educations);
       // Axios post
       const promises = [];
       newDetails.current.educations.forEach((edu) => {
@@ -139,8 +116,13 @@ export default function UserDetailPage() {
       });
 
       Promise.all(promises)
-        .then(fetchUserDetails)
-        .catch((e) => alert("failed."));
+        .then(() => alert("업데이트 성공!"))
+        .catch((e) => alert("failed."))
+        .then(() => {
+          fetchUserDetails();
+          newDetails.current = createInitialState();
+          changedDetails.current = createInitialState();
+        });
 
       setPageInEditMode(false);
     } else {
@@ -161,7 +143,16 @@ export default function UserDetailPage() {
             pageInEditMode={pageInEditMode}
             setBoxesInEdit={setBoxesInEdit}
             handleAdd={handleNewEducation}
-            handleChange={handleEducationChange}
+            handleChange={(id, name, value) =>
+              handleChange(
+                id,
+                name,
+                value,
+                setEducations,
+                newDetails.current.educations,
+                changedDetails.current.educations
+              )
+            }
           />
         </div>
         <div className="inline-flex flex-col bg-blue-200 w-min-content py-4 px-4">

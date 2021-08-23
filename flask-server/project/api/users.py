@@ -111,11 +111,11 @@ def check_current_user():
 @users_blueprint.cli.command("create_default_users")
 def create_default_users():
     """Create three new users and add them to the database"""
-    user1 = User("john@app.com", "1234", "김존수")
+    user1 = User("john@app.com", "12341234", "김존수")
     user1.description = "안녕하세요 김존수입니다!!!"
-    user2 = User("sally@app.com", "1234", "김샐리")
+    user2 = User("sally@app.com", "12341234", "김샐리")
     user2.description = "안녕하세요 김샐리입니다!!!"
-    user3 = User("peter@app.com", "1234", "박피터")
+    user3 = User("peter@app.com", "12341234", "박피터")
     user3.description = "안녕하세요 박피터입니다!!!"
     db.session.add_all([user1, user2, user3])
     db.session.commit()

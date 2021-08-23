@@ -30,7 +30,6 @@ export default function UserDetailsBox({
           <button
             onClick={() => {
               const isValid = validate();
-              console.log("Valid: ", isValid);
               if (isValid) {
                 setIsEditing(false);
                 setBoxesInEdit((prev) => prev - 1);
