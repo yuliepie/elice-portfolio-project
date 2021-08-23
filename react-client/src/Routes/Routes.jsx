@@ -3,7 +3,7 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import LoginPage from "../Views/LoginView/LoginPage";
 import SignUpPage from "../Views/SignUpView/SignUpPage";
 import UserDetailPage from "../Views/UserDetailView/UserDetailPage";
-import UserListPage from "../Views/UserListView/UserListPage";
+import MainPage from "../Views/MainView/MainPage";
 import { useAuth } from "../Contexts/authContext";
 
 export default function Routes() {
@@ -25,7 +25,7 @@ export default function Routes() {
           <UserDetailPage />
         </ProtectedRoute>
         <ProtectedRoute path="/">
-          <UserListPage />
+          <MainPage />
         </ProtectedRoute>
       </Switch>
     </BrowserRouter>

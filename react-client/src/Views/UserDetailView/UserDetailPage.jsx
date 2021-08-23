@@ -233,7 +233,6 @@ export default function UserDetailPage() {
 
   return (
     <PageLayout>
-      <div>User Details!!!</div>
       <div className="flex w-auto bg-red-200 h-full ml-24 mr-4 gap-4">
         <div className="inline-flex flex-col w-3/12 bg-green-200 px-8 py-4">
           <div className="w-full bg-gray-300 h-1/4">이미지</div>
