@@ -9,17 +9,79 @@ import EducationStatus from "./Education/EducationStatus";
 export default function UserDetailPage() {
   const [description, setDescription] = useState(null);
   const [educations, setEducations] = useState(null);
+  const [awards, setAwards] = useState(null);
 
+  // Changed Details - for PATCH request
   const changedDetails = useRef({
     educations: [],
-  });
-  const newDetails = useRef({
-    educations: [],
+    awards: [],
   });
 
+  // New details - for POST request
+  const newDetails = useRef({
+    educations: [],
+    awards: [],
+  });
+
+  // API Fetch
+  async function fetchUserDetails() {
+    try {
+      const response = await axios.get(`/api/users/${id}`);
+      const { user_details } = response.data;
+      setEducations(user_details.educations);
+      console.log(response.data);
+      console.log(educations);
+    } catch (e) {
+      console.log("error in getting user details:", e.message);
+    }
+  }
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  // Checks Authorization for page editing
+  const { currentUser } = useAuth();
+  let { id } = useParams();
+
+  const canEdit = useMemo(() => {
+    return id == currentUser.id;
+  }, [currentUser.id]);
+
+  const [pageInEditMode, setPageInEditMode] = useState(false);
+  const [boxesInEdit, setBoxesInEdit] = useState(0);
+
+  //========================
   // Update Handlers
-  const handleEducationChange = (id, name, value) => {
-    setEducations((prevEdus) => {
+  //========================
+  // const handleEducationChange = (id, name, value) => {
+  //   setEducations((prevEdus) => {
+  //     return prevEdus.map((edu) =>
+  //       edu.id === id ? { ...edu, [name]: value } : edu
+  //     );
+  //   });
+
+  //   // Check if new/changed education:
+  //   if (id[0] === "n") {
+  //     const edu = newDetails.current.educations.filter(
+  //       (edu) => edu.id === id
+  //     )[0];
+  //     edu[name] = value;
+  //   } else {
+  //     const edu = changedDetails.current.educations.filter(
+  //       (edu) => edu.id === id
+  //     )[0];
+  //     if (edu) {
+  //       edu[name] = value;
+  //     } else {
+  //       changedDetails.current.educations.push({
+  //         id: id,
+  //         [name]: value,
+  //       });
+  //     }
+  //   }
+  // };
+  const handleChange = (id, name, value, setState) => {
+    setState((prev) => {
       return prevEdus.map((edu) =>
         edu.id === id ? { ...edu, [name]: value } : edu
       );
@@ -58,34 +120,6 @@ export default function UserDetailPage() {
     newDetails.current.educations.push(newEdu);
   };
 
-  const { currentUser } = useAuth();
-  let { id } = useParams();
-
-  const canEdit = useMemo(() => {
-    console.log("id match: ", id, currentUser.id);
-    console.log(currentUser.email);
-    return id == currentUser.id;
-  }, [currentUser.id]);
-
-  const [pageInEditMode, setPageInEditMode] = useState(false);
-  const [boxesInEdit, setBoxesInEdit] = useState(0);
-
-  async function fetchUserDetails() {
-    try {
-      const response = await axios.get(`/api/users/${id}`);
-      const { user_details } = response.data;
-      setEducations(user_details.educations);
-      console.log(response.data);
-      console.log(educations);
-    } catch (e) {
-      console.log("error in getting user details:", e.message);
-    }
-  }
-  // Fetch user details
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
-
   const handleSave = () => {
     if (!boxesInEdit) {
       // Axios post
@@ -121,7 +155,7 @@ export default function UserDetailPage() {
         <div className="inline-flex flex-col w-3/12 bg-green-200 px-8 py-4">
           <div className="w-full bg-gray-300 h-1/4">이미지</div>
         </div>
-        <div className="inline-flex flex-col bg-yellow-200 flex-1 px-6 py-4">
+        <div className="inline-flex flex-col bg-yellow-200 flex-1 px-6 py-4 overflow-y-auto">
           <EducationsBox
             educations={educations}
             pageInEditMode={pageInEditMode}
