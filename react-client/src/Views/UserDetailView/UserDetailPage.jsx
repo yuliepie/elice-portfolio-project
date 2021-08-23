@@ -6,18 +6,21 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import EducationsBox from "./Education/EducationsBox";
 import AwardsBox from "./Awards/AwardsBox";
 import ProjectsBox from "./Projects/ProjectsBox";
+import CertsBox from "./Certifications/CertsBox";
 
 export default function UserDetailPage() {
   const [description, setDescription] = useState(null);
   const [educations, setEducations] = useState(null);
   const [awards, setAwards] = useState(null);
   const [projects, setProjects] = useState(null);
+  const [certs, setCerts] = useState(null);
 
   const createInitialState = () => {
     return {
       educations: [],
       awards: [],
       projects: [],
+      certs: [],
     };
   };
 
@@ -32,6 +35,7 @@ export default function UserDetailPage() {
       setEducations(user_details.educations);
       setAwards(user_details.awards);
       setProjects(user_details.projects);
+      setCerts(user_details.certifications);
     } catch (e) {
       console.log("error in getting user details:", e.message);
     }
@@ -126,6 +130,17 @@ export default function UserDetailPage() {
     };
     setProjects((prevProjs) => [...prevProjs, newProj]);
     newDetails.current.projects.push(newProj);
+  };
+
+  const handleNewCert = () => {
+    const newCert = {
+      id: "n-" + new Date().getTime().toString(),
+      name: "",
+      provider: "",
+      acquired_date: "",
+    };
+    setCerts((prevCerts) => [...prevCerts, newCert]);
+    newDetails.current.certs.push(newCert);
   };
 
   //===================
@@ -256,6 +271,23 @@ export default function UserDetailPage() {
                 setProjects,
                 newDetails.current.projects,
                 changedDetails.current.projects
+              )
+            }
+          />
+          <CertsBox
+            certs={certs}
+            pageInEditMode={pageInEditMode}
+            setBoxesInEdit={setBoxesInEdit}
+            handleAdd={handleNewCert}
+            validate={() => validate(certs)}
+            handleChange={(id, name, value) =>
+              handleChange(
+                id,
+                name,
+                value,
+                setCerts,
+                newDetails.current.certs,
+                changedDetails.current.certs
               )
             }
           />
