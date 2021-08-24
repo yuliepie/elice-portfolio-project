@@ -121,6 +121,31 @@ def create_default_users():
     db.session.commit()
 
 
+# flask users create_default_users
+@users_blueprint.cli.command("create_many_users")
+def create_many_users():
+    user1 = User("john1@app.com", "12341234", "김존수")
+    user1.description = "안녕하세요 김존수입니다!!!"
+    user2 = User("sally1@app.com", "12341234", "김샐리")
+    user2.description = "안녕하세요 김샐리입니다!!!"
+    user3 = User("peter1@app.com", "12341234", "박피터")
+    user3.description = "안녕하세요 박피터입니다!!!"
+    user4 = User("john2@app.com", "12341234", "김존수")
+    user4.description = "안녕하세요 김존수입니다!!!"
+    user5 = User("sally2@app.com", "12341234", "김샐리")
+    user5.description = "안녕하세요 김샐리입니다!!!"
+    user6 = User("peter2@app.com", "12341234", "박피터")
+    user6.description = "안녕하세요 박피터입니다!!!"
+    user7 = User("john3@app.com", "12341234", "김존수")
+    user7.description = "안녕하세요 김존수입니다!!!"
+    user8 = User("sally3@app.com", "12341234", "김샐리")
+    user8.description = "안녕하세요 김샐리입니다!!!"
+    user9 = User("peter3@app.com", "12341234", "박피터")
+    user9.description = "안녕하세요 박피터입니다!!!"
+    db.session.add_all([user1, user2, user3, user4, user5, user6, user7, user8, user9])
+    db.session.commit()
+
+
 @users_blueprint.cli.command("delete_users")
 def delete_users():
     """Clear all user records from table."""
