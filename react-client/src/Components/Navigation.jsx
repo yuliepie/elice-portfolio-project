@@ -28,7 +28,7 @@ export default function Navigation() {
             <NavLink to="/">네트워크</NavLink>
           </div>
           <div className="w-20 border-yellow-100 border-2">
-            <NavLink to={`/users/${currentUser.id}`}>마이페이지</NavLink>
+            <NavLink to={`/users/my-page`}>마이페이지</NavLink>
           </div>
           <div className="w-20 border-yellow-100 border-2">
             <button onClick={handleLogout}>로그아웃</button>

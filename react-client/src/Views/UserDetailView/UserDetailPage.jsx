@@ -8,7 +8,7 @@ import AwardsBox from "./Awards/AwardsBox";
 import ProjectsBox from "./Projects/ProjectsBox";
 import CertsBox from "./Certifications/CertsBox";
 
-export default function UserDetailPage() {
+export default function UserDetailPage({ myPage }) {
   const [description, setDescription] = useState(null);
   const [educations, setEducations] = useState(null);
   const [awards, setAwards] = useState(null);
@@ -28,9 +28,13 @@ export default function UserDetailPage() {
   const newDetails = useRef(createInitialState()); // New details - for POST request
 
   // API Fetch
+  let { id } = useParams();
+  const { currentUser } = useAuth();
+  const searchId = myPage ? currentUser.id : id;
+
   async function fetchUserDetails() {
     try {
-      const response = await axios.get(`/api/users/${id}`);
+      const response = await axios.get(`/api/users/${searchId}`);
       const { user_details } = response.data;
       setEducations(user_details.educations);
       setAwards(user_details.awards);
@@ -42,15 +46,7 @@ export default function UserDetailPage() {
   }
   useEffect(() => {
     fetchUserDetails();
-  }, []);
-
-  // Checks Authorization for page editing
-  const { currentUser } = useAuth();
-  let { id } = useParams();
-
-  const canEdit = useMemo(() => {
-    return id == currentUser.id;
-  }, [currentUser.id]);
+  }, [searchId]);
 
   const [pageInEditMode, setPageInEditMode] = useState(false);
   const [boxesInEdit, setBoxesInEdit] = useState(0);
@@ -159,14 +155,18 @@ export default function UserDetailPage() {
         formattedEdu.push(["school_name", edu.school_name]);
         formattedEdu.push(["major", edu.major]);
         formattedEdu.push(["status_id", parseInt(edu.status_id)]);
-        promises.push(axios.post(`/api/users/${id}/educations`, formattedEdu));
+        promises.push(
+          axios.post(`/api/users/${searchId}/educations`, formattedEdu)
+        );
       });
 
       newDetails.current.awards.forEach((award) => {
         const formattedAward = [];
         formattedAward.push(["name", award.name]);
         formattedAward.push(["description", award.description]);
-        promises.push(axios.post(`/api/users/${id}/awards`, formattedAward));
+        promises.push(
+          axios.post(`/api/users/${searchId}/awards`, formattedAward)
+        );
       });
 
       newDetails.current.projects.forEach((proj) => {
@@ -175,7 +175,9 @@ export default function UserDetailPage() {
         formattedProj.push(["description", proj.description]);
         formattedProj.push(["start_date", proj.start_date]);
         formattedProj.push(["end_date", proj.end_date]);
-        promises.push(axios.post(`/api/users/${id}/projects`, formattedProj));
+        promises.push(
+          axios.post(`/api/users/${searchId}/projects`, formattedProj)
+        );
       });
 
       newDetails.current.certs.forEach((cert) => {
@@ -184,7 +186,7 @@ export default function UserDetailPage() {
         formattedCert.push(["provider", cert.provider]);
         formattedCert.push(["acquired_date", cert.acquired_date]);
         promises.push(
-          axios.post(`/api/users/${id}/certifications`, formattedCert)
+          axios.post(`/api/users/${searchId}/certifications`, formattedCert)
         );
       });
 
@@ -194,25 +196,25 @@ export default function UserDetailPage() {
 
       changedDetails.current.educations.forEach((edu) => {
         promises.push(
-          axios.patch(`/api/users/${id}/educations/${edu.id}`, edu)
+          axios.patch(`/api/users/${searchId}/educations/${edu.id}`, edu)
         );
       });
 
       changedDetails.current.awards.forEach((award) => {
         promises.push(
-          axios.patch(`/api/users/${id}/awards/${award.id}`, award)
+          axios.patch(`/api/users/${searchId}/awards/${award.id}`, award)
         );
       });
 
       changedDetails.current.projects.forEach((proj) => {
         promises.push(
-          axios.patch(`/api/users/${id}/projects/${proj.id}`, proj)
+          axios.patch(`/api/users/${searchId}/projects/${proj.id}`, proj)
         );
       });
 
       changedDetails.current.certs.forEach((cert) => {
         promises.push(
-          axios.patch(`/api/users/${id}/certifications/${cert.id}`, cert)
+          axios.patch(`/api/users/${searchId}/certifications/${cert.id}`, cert)
         );
       });
 
@@ -308,7 +310,7 @@ export default function UserDetailPage() {
           />
         </div>
         <div className="inline-flex flex-col bg-blue-200 w-min-content py-4 px-4">
-          {canEdit && !pageInEditMode && (
+          {myPage && !pageInEditMode && (
             <button
               onClick={() => setPageInEditMode(true)}
               className="rounded-lg bg-red-200 w-20 h-12"
