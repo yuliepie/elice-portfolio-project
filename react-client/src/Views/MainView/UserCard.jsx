@@ -7,7 +7,7 @@ export default function UserCard({ user }) {
   };
 
   return (
-    <div className="bg-white rounded-lg h-auto w-48 flex-shrink-0 p-4 pt-6 inline-flex flex-col justify-center items-center shadow-md border-gray-200 border">
+    <div className="bg-white rounded-lg h-auto w-48 flex-shrink-0 p-4 pt-6 inline-flex flex-col justify-center items-center shadow-md border-gray-300 border border-opacity-80">
       <div className="rounded-full h-20 w-20 bg-profile-img bg-contain shadow-xl" />
       <div className="text-center text-lg mt-4 font-semibold text-gray-900 text-opacity-90">
         {user.name}
