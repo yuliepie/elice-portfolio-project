@@ -7,10 +7,17 @@ export default function UserCard({ user }) {
   };
 
   return (
-    <div className="bg-green-200 h-48 w-40 flex-shrink-0 p-4 inline-flex flex-col">
-      <div>{user.name}</div>
+    <div className="bg-white rounded-lg h-auto w-48 flex-shrink-0 p-4 pt-6 inline-flex flex-col justify-center items-center shadow-md border-gray-200 border">
+      <div className="rounded-full h-20 w-20 bg-profile-img bg-contain shadow-xl" />
+      <div className="text-center text-lg mt-4 font-semibold text-gray-900 text-opacity-90">
+        {user.name}
+      </div>
+      <p className="text-xs mt-1 font-medium text-gray-500">
+        {user.description}
+      </p>
+      <div className="px-2 h-0.5 w-full m-3 border-gray-400 border-b border-opacity-50"></div>
       <button
-        className="bg-indigo-300 p-2 rounded-md mt-auto"
+        className="py-2 px-4 rounded-full mt-auto text-sm main-btn"
         onClick={handleUserClick}
       >
         정보 보기

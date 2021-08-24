@@ -35,47 +35,47 @@ export default function LoginForm() {
       });
   };
   return (
-    <div>
-      <div>
-        <form className="my-4">
-          <div className="grid grid-cols-1 gap-6">
-            <label className="block">
-              <span className="text-gray-700">아이디 (이메일):</span>
-              <input
-                name="email"
-                type="email"
-                className="form-style"
-                placeholder="john@example.com"
-                required
-                onChange={handleInputChange}
-              />
-            </label>
-            <label className="block">
-              <span className="text-gray-700">비밀번호:</span>
-              <input
-                name="password"
-                type="password"
-                className="form-style"
-                required
-                onChange={handleInputChange}
-              />
-            </label>
-            <button
-              type="subimit"
-              className="bg-blue-200 w-20 p-2 mx-auto"
-              onClick={handleLoginSubmit}
-            >
-              로그인
-            </button>
-          </div>
-        </form>
-        <div className="text-center">
-          <Link to="/signup" className="w-max-content">
-            <span className="border-b-2 border-blue-500 w-max-content text-blue-500">
-              아직 회원이 아니신가요?
-            </span>
-          </Link>
+    <div className="w-80">
+      <form className="mt-4">
+        <div className="grid grid-cols-1">
+          <label className="block">
+            <p className="text-gray-700 font-medium ml-1 mb-2.5">
+              아이디 (email) :
+            </p>
+            <input
+              name="email"
+              type="email"
+              className="form-style"
+              placeholder="john@example.com"
+              required
+              onChange={handleInputChange}
+            />
+          </label>
+          <label className="block mt-7">
+            <p className="text-gray-700 font-medium ml-1 mb-2.5">비밀번호:</p>
+            <input
+              name="password"
+              type="password"
+              className="form-style"
+              required
+              onChange={handleInputChange}
+            />
+          </label>
+          <button
+            type="submit"
+            className="main-btn mt-10 mx-auto py-2.5 px-5"
+            onClick={handleLoginSubmit}
+          >
+            로그인
+          </button>
         </div>
+      </form>
+      <div className="text-center mt-2">
+        <Link to="/signup" className="w-max-content">
+          <span className="border-b-2 border-blue-500 w-max-content text-blue-500 text-sm">
+            아직 회원이 아니신가요?
+          </span>
+        </Link>
       </div>
     </div>
   );

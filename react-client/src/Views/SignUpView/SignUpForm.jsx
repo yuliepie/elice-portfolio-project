@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useHistory } from "react-router";
+import { Link, useHistory } from "react-router-dom";
 
 export default function SignUpForm() {
   const history = useHistory();
@@ -26,7 +26,17 @@ export default function SignUpForm() {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    console.log(signUpDetails);
+    const { email, password, name } = signUpDetails;
+
+    if (!email || !password || !name) {
+      alert("모든 항목을 입력해주세요.");
+      return;
+    }
+
+    if (!passwordMatch) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
 
     try {
       const response = await axios.post("/api/users", signUpDetails);
@@ -41,61 +51,80 @@ export default function SignUpForm() {
   };
 
   return (
-    <div>
-      <div>
-        <form onSubmit={handleSignUp}>
-          <div className="grid grid-cols-1 gap-6">
+    <div className="w-full">
+      <form onSubmit={handleSignUp} className="mt-4">
+        <div className="flex divide-x justify-center items-start">
+          <div className="grid grid-cols-1 gap-4 flex-grow pr-6">
             <label className="block">
-              <span className="text-gray-700">아이디 (이메일):</span>
+              <p className="text-gray-700 font-medium ml-1 mb-2.5">
+                <span className="text-red-500 text-lg"> * </span>
+                아이디 (이메일):
+              </p>
               <input
                 type="email"
                 className="form-style"
                 placeholder="john@example.com"
-                required
                 name="email"
                 onChange={handleInputChange}
               />
             </label>
             <label className="block">
-              <span className="text-gray-700">비밀번호:</span>
+              <p className="text-gray-700 font-medium ml-1 mb-2.5">
+                <span className="text-red-500 text-lg"> * </span>
+                이름:
+              </p>
+              <input
+                type="text"
+                name="name"
+                className="form-style"
+                onChange={handleInputChange}
+              />
+            </label>
+          </div>
+          <div className="grid grid-cols-1 gap-4 flex-grow pl-6">
+            <label className="block">
+              <p className="text-gray-700 font-medium ml-1 mb-2.5">
+                <span className="text-red-500 text-lg"> * </span>
+                비밀번호:
+              </p>
               <input
                 type="password"
                 className="form-style"
-                required
                 name="password"
                 placeholder="최소 8자 이상."
                 onChange={handleInputChange}
               />
             </label>
             <label className="block">
-              <span className="text-gray-700">비밀번호 확인:</span>
+              <p className="text-gray-700 font-medium ml-1 mb-2.5">
+                <span className="text-red-500 text-lg"> * </span>
+                비밀번호 확인:
+              </p>
               <input
                 type="password"
                 className="form-style"
-                required
                 onBlur={checkPasswordMatch}
               />
             </label>
-            {!passwordMatch ? <p>비밀번호가 일치하지 않습니다.</p> : null}
-
-            <label className="block">
-              <span className="text-gray-700">이름:</span>
-              <input
-                type="text"
-                name="name"
-                className="form-style"
-                required
-                onChange={handleInputChange}
-              />
-            </label>
-            <button
-              type="submit"
-              className="bg-blue-200 w-content-max p-2 mx-auto"
-            >
-              가입 완료하기
-            </button>
+            {!passwordMatch ? (
+              <p className="justify-self-end mr-1 text-sm text-red-500">
+                비밀번호가 일치하지 않습니다.
+              </p>
+            ) : null}
           </div>
-        </form>
+        </div>
+        <div className="grid grid-cols-1">
+          <button type="submit" className="main-btn mt-10 mx-auto py-2.5 px-5">
+            가입 완료
+          </button>
+        </div>
+      </form>
+      <div className="text-center mt-2">
+        <Link to="/login" className="w-max-content">
+          <span className="border-b-2 border-blue-500 w-max-content text-blue-500 text-sm">
+            이미 회원이에요!
+          </span>
+        </Link>
       </div>
     </div>
   );

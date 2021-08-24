@@ -3,12 +3,14 @@ import styled from "styled-components";
 
 export default function PageLayout({ children }) {
   return (
-    <div>
+    <div className="h-screen flex flex-col">
       <header>
         <Navigation />
       </header>
-      <main className="pt-16 bg-pink-200 h-screen">{children}</main>
-      <footer>Footer.</footer>
+      <main className="pt-12 bg-indigo-50 bg-opacity-90 h-auto flex-grow">
+        {children}
+      </main>
+      <footer className="mt-auto">Footer.</footer>
     </div>
   );
 }

@@ -4,9 +4,19 @@
 
 @layer components {
   .form-style {
-    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
   }
   .details-form-style {
     @apply mt-1 block w-2/3 rounded-md text-sm border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+  }
+  .nav-item {
+    @apply w-20 text-sm text-gray-500;
+  }
+
+  .main-btn {
+    @apply bg-indigo-500 text-white p-2 rounded-full hover:bg-indigo-300 hover:text-gray-900 hover:font-medium shadow-lg transition duration-150 ease-linear;
+  }
+  .header-text {
+    @apply text-5xl font-light text-white text-opacity-80;
   }
 }
