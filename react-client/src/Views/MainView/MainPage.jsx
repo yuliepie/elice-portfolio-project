@@ -49,7 +49,7 @@ export default function MainPage() {
         </div>
       </div>
       <div className="px-20 py-10 overflow-y-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-4/6 mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 w-4/6 mx-auto">
           {users && users.map((user) => <UserCard key={user.id} user={user} />)}
         </div>
       </div>

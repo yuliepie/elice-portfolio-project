@@ -7,7 +7,7 @@ export default function PageLayout({ children }) {
       <header>
         <Navigation />
       </header>
-      <main className="pt-12 bg-indigo-50 bg-opacity-90 h-auto flex-grow">
+      <main className="pt-20 bg-indigo-50 bg-opacity-90 h-auto flex-grow">
         {children}
       </main>
       <footer className="mt-auto">Footer.</footer>

@@ -10,13 +10,16 @@
     @apply mt-1 block w-2/3 rounded-md text-sm border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
   }
   .nav-item {
-    @apply w-20 text-sm text-gray-500;
+    @apply w-auto mx-2 text-sm text-gray-500 border-transparent border-b-2 pb-1.5 hover:border-indigo-400 transition ease-in-out duration-500 active:border-indigo-400;
   }
 
   .main-btn {
-    @apply bg-indigo-500 text-white p-2 rounded-full hover:bg-indigo-300 hover:text-gray-900 hover:font-medium shadow-lg transition duration-150 ease-linear;
+    @apply bg-indigo-500 text-white p-2 rounded-full hover:bg-indigo-300 hover:text-gray-900 hover:font-medium shadow-lg transition duration-500 ease-in-out;
   }
   .header-text {
     @apply text-5xl font-light text-white text-opacity-80;
+  }
+  .user-card-hover {
+    @apply group-hover:transform group-hover:scale-105 transition duration-300 ease-in-out origin-bottom;
   }
 }

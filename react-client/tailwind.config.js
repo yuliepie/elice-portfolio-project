@@ -13,7 +13,18 @@ module.exports = {
     },
   },
   variants: {
-    extend: { boxShadow: ["focus"], ring: ["focus"], fontWeight: ["hover"] },
+    extend: {
+      boxShadow: ["focus"],
+      ring: ["focus"],
+      fontWeight: ["hover"],
+      borderWidth: ["hover", "active"],
+      borderColor: ["active"],
+      scale: ["group-hover"],
+      transform: ["group-hover, hover"],
+      transitionDuration: ["group-hover, hover"],
+      transformOrigin: ["hover", "group-hover"],
+      backgroundColor: ["active"],
+    },
   },
   plugins: [require("@tailwindcss/forms")],
 };

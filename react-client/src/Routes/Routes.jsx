@@ -21,13 +21,13 @@ export default function Routes() {
           {currentUser ? <Redirect to="/" /> : <SignUpPage />}
         </Route>
         {/* Protected - needs to be logged in */}
-        <ProtectedRoute path="/users/my-page">
+        <ProtectedRoute exact path="/users/my-page">
           <UserDetailPage myPage={true} />
         </ProtectedRoute>
-        <ProtectedRoute path="/users/:id">
+        <ProtectedRoute exact path="/users/:id">
           <UserDetailPage />
         </ProtectedRoute>
-        <ProtectedRoute path="/">
+        <ProtectedRoute exact path="/">
           <MainPage />
         </ProtectedRoute>
       </Switch>
