@@ -22,7 +22,7 @@ export default function Navigation() {
   return (
     <div className="flex w-full h-20 bg-white justify-center items-center fixed z-50">
       <div className="inline-flex justify-end w-7/12 py-2 items-center mx-auto">
-        <button className="font-bold text-lg leading-8 text-center h-8 w-20 mr-auto">
+        <button className="font-bold text-xl leading-8 text-center h-8 w-20 mr-auto">
           <NavLink to="/">ElicerIn.</NavLink>
         </button>
         {currentUser && (
