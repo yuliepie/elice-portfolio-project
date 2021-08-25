@@ -17,11 +17,11 @@ export default function ProjectForm({ project, handleChange }) {
           handleChange(project.id, "description", e.target.value)
         }
       />
-      <div className="mt-2 flex gap-4">
+      <div className="mt-2 flex items-center gap-2">
         <label>
-          <span className="text-gray-700 text-sm">시작: </span>
+          {/* <span className="text-gray-700 text-sm">시작: </span> */}
           <input
-            className="text-sm"
+            className="text-sm details-form-style w-auto"
             onChange={(e) =>
               handleChange(project.id, "start_date", e.target.value)
             }
@@ -29,10 +29,11 @@ export default function ProjectForm({ project, handleChange }) {
             type="date"
           />
         </label>
-        <label>
-          <span className="text-gray-700 text-sm">종료: </span>
+        <span className="text-gray-700 font-bold"> 부터 </span>
+        <label className="ml-2">
+          {/* <span className="text-gray-700 text-sm">종료: </span> */}
           <input
-            className="text-sm"
+            className="text-sm details-form-style w-auto"
             onChange={(e) =>
               handleChange(project.id, "end_date", e.target.value)
             }
@@ -40,6 +41,7 @@ export default function ProjectForm({ project, handleChange }) {
             type="date"
           />
         </label>
+        <span className="text-gray-700 font-bold"> 까지 </span>
       </div>
     </div>
   );

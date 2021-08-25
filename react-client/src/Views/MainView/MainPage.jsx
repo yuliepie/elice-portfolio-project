@@ -43,7 +43,10 @@ export default function MainPage() {
             placeholder="프로필을 검색해보세요!"
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button onClick={fetchQueriedUsers} className="main-btn w-20">
+          <button
+            onClick={fetchQueriedUsers}
+            className="main-btn w-20 bg-red-400 hover:bg-opacity-80"
+          >
             검색
           </button>
         </div>

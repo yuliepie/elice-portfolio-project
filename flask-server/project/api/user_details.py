@@ -125,6 +125,7 @@ def get_user_details(user_id):
             "awards": awards,
             "projects": projects,
             "certifications": certifications,
+            "description": user.description,
         },
     }
 

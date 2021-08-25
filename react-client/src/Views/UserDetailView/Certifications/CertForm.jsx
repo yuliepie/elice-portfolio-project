@@ -16,16 +16,16 @@ export default function CertForm({ cert, handleChange }) {
         onChange={(e) => handleChange(cert.id, "provider", e.target.value)}
       />
       <div className="mt-2">
-        <label>
-          <span className="text-gray-700 text-sm">취득 날짜: </span>
+        <label className="inline-flex items-center gap-2">
           <input
-            className="text-sm"
+            className="details-form-style w-auto"
             onChange={(e) =>
               handleChange(cert.id, "acquired_date", e.target.value)
             }
             value={cert.acquired_date}
             type="date"
           />
+          <span className="text-gray-700 font-bold">에 취득.</span>
         </label>
       </div>
     </div>

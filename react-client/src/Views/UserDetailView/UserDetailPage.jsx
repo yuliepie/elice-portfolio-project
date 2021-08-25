@@ -36,6 +36,7 @@ export default function UserDetailPage({ myPage }) {
     try {
       const response = await axios.get(`/api/users/${searchId}`);
       const { user_details } = response.data;
+      setDescription(user_details.description);
       setEducations(user_details.educations);
       setAwards(user_details.awards);
       setProjects(user_details.projects);
@@ -145,6 +146,35 @@ export default function UserDetailPage({ myPage }) {
 
   const handleSave = () => {
     if (!boxesInEdit) {
+      // Check something has changed
+      const {
+        educations: newEdu,
+        awards: newAward,
+        projects: newProj,
+        certs: newCert,
+      } = newDetails.current;
+      const nothingToPost =
+        !newEdu.length &&
+        !newAward.length &&
+        !newProj.length &&
+        !newCert.length;
+
+      const {
+        educations: changedEdu,
+        awards: changedAward,
+        projects: changedProj,
+        certs: changedCert,
+      } = changedDetails.current;
+      const nothingToPatch =
+        !changedEdu.length &&
+        !changedAward.length &&
+        !changedProj.length &&
+        !changedCert.length;
+
+      if (nothingToPost && nothingToPatch) {
+        setPageInEditMode(false);
+        return;
+      }
       //--------
       // POST:
       //--------
@@ -235,98 +265,106 @@ export default function UserDetailPage({ myPage }) {
 
   return (
     <PageLayout>
-      <div className="flex w-auto bg-red-200 h-full ml-24 mr-4 gap-4">
-        <div className="inline-flex flex-col w-3/12 bg-green-200 px-8 py-4">
-          <div className="w-full bg-gray-300 h-1/4">이미지</div>
-        </div>
-        <div className="inline-flex flex-col bg-yellow-200 flex-1 px-6 py-4 overflow-y-auto">
-          <EducationsBox
-            educations={educations}
-            pageInEditMode={pageInEditMode}
-            setBoxesInEdit={setBoxesInEdit}
-            handleAdd={handleNewEducation}
-            validate={() => validate(educations)}
-            handleChange={(id, name, value) =>
-              handleChange(
-                id,
-                name,
-                value,
-                setEducations,
-                newDetails.current.educations,
-                changedDetails.current.educations
-              )
-            }
-          />
-          <AwardsBox
-            awards={awards}
-            pageInEditMode={pageInEditMode}
-            setBoxesInEdit={setBoxesInEdit}
-            handleAdd={handleNewAward}
-            validate={() => validate(awards)}
-            handleChange={(id, name, value) =>
-              handleChange(
-                id,
-                name,
-                value,
-                setAwards,
-                newDetails.current.awards,
-                changedDetails.current.awards
-              )
-            }
-          />
-          <ProjectsBox
-            projects={projects}
-            pageInEditMode={pageInEditMode}
-            setBoxesInEdit={setBoxesInEdit}
-            handleAdd={handleNewProject}
-            validate={() => validate(projects)}
-            handleChange={(id, name, value) =>
-              handleChange(
-                id,
-                name,
-                value,
-                setProjects,
-                newDetails.current.projects,
-                changedDetails.current.projects
-              )
-            }
-          />
-          <CertsBox
-            certs={certs}
-            pageInEditMode={pageInEditMode}
-            setBoxesInEdit={setBoxesInEdit}
-            handleAdd={handleNewCert}
-            validate={() => validate(certs)}
-            handleChange={(id, name, value) =>
-              handleChange(
-                id,
-                name,
-                value,
-                setCerts,
-                newDetails.current.certs,
-                changedDetails.current.certs
-              )
-            }
-          />
-        </div>
-        <div className="inline-flex flex-col bg-blue-200 w-min-content py-4 px-4">
-          {myPage && !pageInEditMode && (
-            <button
-              onClick={() => setPageInEditMode(true)}
-              className="rounded-lg bg-red-200 w-20 h-12"
+      <div className="fixed inset-x-0 top-20 pt-20 h-full flex flex-col items-center w-4/12 bg-indigo-400">
+        <div className="bg-gray-300 w-48 h-48 rounded-full bg-detail-profile-img bg-contain shadow-2xl" />
+        <h3 className="mt-6 text-white text-4xl font-bold">
+          {currentUser.name}
+        </h3>
+        <p className="mt-3 text-indigo-50 text-base font-medium">
+          {description}
+        </p>
+      </div>
+      <div className="user-details w-5/12 flex flex-col bg-opacity-20 flex-1 py-16 pl-16  overflow-y-auto">
+        <EducationsBox
+          educations={educations}
+          pageInEditMode={pageInEditMode}
+          setBoxesInEdit={setBoxesInEdit}
+          handleAdd={handleNewEducation}
+          validate={() => validate(educations)}
+          handleChange={(id, name, value) =>
+            handleChange(
+              id,
+              name,
+              value,
+              setEducations,
+              newDetails.current.educations,
+              changedDetails.current.educations
+            )
+          }
+        />
+        <AwardsBox
+          awards={awards}
+          pageInEditMode={pageInEditMode}
+          setBoxesInEdit={setBoxesInEdit}
+          handleAdd={handleNewAward}
+          validate={() => validate(awards)}
+          handleChange={(id, name, value) =>
+            handleChange(
+              id,
+              name,
+              value,
+              setAwards,
+              newDetails.current.awards,
+              changedDetails.current.awards
+            )
+          }
+        />
+        <ProjectsBox
+          projects={projects}
+          pageInEditMode={pageInEditMode}
+          setBoxesInEdit={setBoxesInEdit}
+          handleAdd={handleNewProject}
+          validate={() => validate(projects)}
+          handleChange={(id, name, value) =>
+            handleChange(
+              id,
+              name,
+              value,
+              setProjects,
+              newDetails.current.projects,
+              changedDetails.current.projects
+            )
+          }
+        />
+        <CertsBox
+          certs={certs}
+          pageInEditMode={pageInEditMode}
+          setBoxesInEdit={setBoxesInEdit}
+          handleAdd={handleNewCert}
+          validate={() => validate(certs)}
+          handleChange={(id, name, value) =>
+            handleChange(
+              id,
+              name,
+              value,
+              setCerts,
+              newDetails.current.certs,
+              changedDetails.current.certs
+            )
+          }
+        />
+      </div>
+      <div className="fixed inset-y-20 right-0 w-3/12 h-full flex flex-col py-4 px-10 justify-start items-start">
+        {myPage && !pageInEditMode && (
+          <button
+            onClick={() => setPageInEditMode(true)}
+            className="edit-btn p-2.5"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
             >
-              수정
-            </button>
-          )}
-          {pageInEditMode && (
-            <button
-              onClick={handleSave}
-              className="rounded-lg bg-red-200 w-20 h-12"
-            >
-              완료
-            </button>
-          )}
-        </div>
+              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+            </svg>
+          </button>
+        )}
+        {pageInEditMode && (
+          <button onClick={handleSave} className="finish-btn p-2.5">
+            완료
+          </button>
+        )}
       </div>
     </PageLayout>
   );

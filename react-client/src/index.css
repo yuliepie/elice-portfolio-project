@@ -7,19 +7,52 @@
     @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
   }
   .details-form-style {
-    @apply mt-1 block w-2/3 rounded-md text-sm border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+    @apply mt-2 block w-2/3 rounded-md font-bold border-gray-700 border-2 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
   }
   .nav-item {
     @apply w-auto mx-2 text-sm text-gray-500 border-transparent border-b-2 pb-1.5 hover:border-indigo-400 transition ease-in-out duration-500 active:border-indigo-400;
   }
 
-  .main-btn {
+  /* .main-btn {
     @apply bg-indigo-500 text-white p-2 rounded-full hover:bg-indigo-300 hover:text-gray-900 hover:font-medium shadow-lg transition duration-500 ease-in-out;
+  } */
+
+  /* .main-btn {
+    @apply bg-red-600 bg-opacity-80 text-white font-medium p-2 rounded-full hover:bg-indigo-600 hover:font-medium shadow-lg transition duration-300 ease-in-out;
+  } */
+
+  .main-btn {
+    @apply bg-indigo-500 text-white p-2 rounded-full hover:bg-red-400 hover:font-medium shadow-lg transition duration-300 ease-in-out;
   }
+
   .header-text {
     @apply text-5xl font-light text-white text-opacity-80;
   }
   .user-card-hover {
     @apply group-hover:transform group-hover:scale-105 transition duration-300 ease-in-out origin-bottom;
+  }
+  .user-details {
+    margin-left: 33.33%;
+  }
+  .user-detail-title {
+    @apply font-bold text-lg text-gray-800 text-opacity-90;
+  }
+  .user-detail-desc {
+    @apply p-1 text-sm;
+  }
+  .user-detail-date {
+    @apply p-1 text-xs text-gray-700 text-opacity-80 font-light;
+  }
+  .user-detail-wrapper {
+    @apply w-full pt-2.5;
+  }
+  .edit-btn {
+    @apply rounded-lg bg-gray-700 text-white text-sm font-medium p-2 font-light hover:bg-opacity-70 transition duration-300 ease-in-out shadow-lg delay-75;
+  }
+  .finish-btn {
+    @apply edit-btn bg-red-500;
+  }
+  .detail-label {
+    @apply text-sm text-gray-700 text-opacity-70 tracking-wider align-bottom;
   }
 }

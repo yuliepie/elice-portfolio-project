@@ -20,7 +20,7 @@ export default function EducationForm({ education, handleChange }) {
       />
 
       {/* Radio Buttons */}
-      <div className="flex gap-4">
+      <div className="mt-4 flex gap-4">
         <label className="inline-flex items-center">
           <input
             className="form-radio"
@@ -32,7 +32,7 @@ export default function EducationForm({ education, handleChange }) {
               handleChange(education.id, "status_id", e.target.value)
             }
           />
-          <span className="ml-2">재학중</span>
+          <span className="ml-2 text-gray-700 font-bold">재학중</span>
         </label>
         <label className="inline-flex items-center">
           <input
@@ -45,7 +45,7 @@ export default function EducationForm({ education, handleChange }) {
               handleChange(education.id, "status_id", e.target.value)
             }
           />
-          <span className="ml-2">학사졸업</span>
+          <span className="ml-2 text-gray-700 font-bold">학사졸업</span>
         </label>
         <label className="inline-flex items-center">
           <input
@@ -58,7 +58,7 @@ export default function EducationForm({ education, handleChange }) {
               handleChange(education.id, "status_id", e.target.value)
             }
           />
-          <span className="ml-2">석사졸업</span>
+          <span className="ml-2 text-gray-700 font-bold">석사졸업</span>
         </label>
         <label className="inline-flex items-center">
           <input
@@ -71,7 +71,7 @@ export default function EducationForm({ education, handleChange }) {
               handleChange(education.id, "status_id", e.target.value)
             }
           />
-          <span className="ml-2">박사졸업</span>
+          <span className="ml-2 text-gray-700 font-bold">박사졸업</span>
         </label>
       </div>
     </div>
