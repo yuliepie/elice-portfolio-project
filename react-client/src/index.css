@@ -33,12 +33,13 @@
   }
   .user-details {
     margin-left: 33.33%;
+    width: 45%;
   }
   .user-profile-box {
-    @apply flex flex-col items-center w-72 mx-auto py-8 px-4 rounded-3xl border;
+    @apply relative flex flex-col items-center w-72 mx-auto py-8 px-4 rounded-3xl border transition duration-300 ease-in-out;
   }
   .user-details-box {
-    @apply relative w-full mb-6 pl-4 pr-8 pb-4 pt-6 rounded-3xl border;
+    @apply relative w-full mb-6 pl-4 pr-8 pb-4 pt-6 rounded-3xl border transition duration-300 ease-in-out;
   }
   .user-detail-title {
     @apply font-bold text-lg text-gray-800 text-opacity-90;
@@ -53,12 +54,15 @@
     @apply w-full pt-2.5;
   }
   .edit-btn {
-    @apply rounded-lg bg-gray-700 text-white text-sm font-medium p-2 font-light hover:bg-opacity-70 transition duration-300 ease-in-out shadow-lg delay-75;
+    @apply rounded-lg bg-gray-700 text-white text-sm font-medium p-2 font-light hover:bg-opacity-90 hover:bg-gray-500 transition duration-150 ease-in-out shadow-lg delay-75 z-40;
   }
   .finish-btn {
     @apply edit-btn bg-red-500;
   }
   .detail-label {
     @apply text-sm text-gray-700 text-opacity-70 tracking-wider align-bottom;
+  }
+  .shared-transition {
+    @apply transition duration-150 ease-in-out;
   }
 }

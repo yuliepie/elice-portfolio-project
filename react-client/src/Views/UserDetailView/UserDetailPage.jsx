@@ -7,10 +7,11 @@ import EducationsBox from "./Education/EducationsBox";
 import AwardsBox from "./Awards/AwardsBox";
 import ProjectsBox from "./Projects/ProjectsBox";
 import CertsBox from "./Certifications/CertsBox";
+import EditItemButton from "./Shared/EditItemButton";
 
 export default function UserDetailPage({ myPage }) {
-  const [description, setDescription] = useState(null);
   const [name, setName] = useState(null);
+  const [description, setDescription] = useState(null);
   const [educations, setEducations] = useState(null);
   const [awards, setAwards] = useState(null);
   const [projects, setProjects] = useState(null);
@@ -272,18 +273,31 @@ export default function UserDetailPage({ myPage }) {
         <div
           className={
             pageInEditMode
-              ? "user-profile-box border-gray-700"
+              ? "user-profile-box bg-indigo-50 bg-opacity-90 border-gray-700 border-opacity-50 shadow-2xl"
               : "user-profile-box border-transparent"
           }
         >
           <div className="w-48 h-48 rounded-full bg-detail-profile-img bg-contain shadow-2xl" />
-          <h3 className="mt-6 text-white text-4xl font-bold">{name}</h3>
-          <p className="mt-3 text-indigo-50 text-base font-medium">
+          <h3
+            className={`mt-6 text-4xl font-bold shared-transition ${
+              pageInEditMode ? "text-gray-800" : "text-white"
+            }`}
+          >
+            {name}
+          </h3>
+          <p
+            className={`mt-3 text-base font-medium shared-transition ${
+              pageInEditMode ? "text-gray-700" : "text-indigo-50"
+            }`}
+          >
             {description}
           </p>
+          {pageInEditMode && (
+            <EditItemButton position="absolute -top-2 -right-2" />
+          )}
         </div>
       </div>
-      <div className="user-details w-5/12 flex flex-col bg-opacity-20 flex-1 py-10 pl-16  overflow-y-auto">
+      <div className="user-details flex flex-col bg-opacity-20 flex-1 py-10 pl-16 pr-4 overflow-y-auto">
         <EducationsBox
           educations={educations}
           pageInEditMode={pageInEditMode}
@@ -353,7 +367,7 @@ export default function UserDetailPage({ myPage }) {
           }
         />
       </div>
-      <div className="fixed inset-y-20 right-0 w-3/12 h-full flex flex-col py-4 px-10 justify-start items-start">
+      <div className="fixed inset-y-20 right-0 w-1/5 h-full flex flex-col py-4 px-2 justify-start items-start">
         {myPage && !pageInEditMode && (
           <button
             onClick={() => setPageInEditMode(true)}

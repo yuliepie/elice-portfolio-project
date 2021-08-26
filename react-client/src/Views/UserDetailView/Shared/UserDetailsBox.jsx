@@ -26,12 +26,12 @@ export default function UserDetailsBox({
       </div>
       {pageInEditMode && !isEditing && (
         <EditItemButton
-          onClick={() => {
+          handleClick={() => {
             setIsEditing(true);
             setBoxesInEdit((prev) => prev + 1);
           }}
-          position="absolute top-4 right-6"
-        ></EditItemButton>
+          position="absolute -top-2 -right-2"
+        />
       )}
       {isEditing && (
         <>
@@ -46,11 +46,11 @@ export default function UserDetailsBox({
                 alert("모든 항목을 입력하세요.");
               }
             }}
-            className="edit-btn text-sm p-2 rounded-lg absolute top-4 right-2 text-white shadow-lg hover:bg-opacity-50 transition duration-200 ease-in-out"
+            className="edit-btn text-sm p-2 rounded-lg absolute top-4 right-6 text-white shadow-lg hover:bg-opacity-50 transition duration-200 ease-in-out"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-6 w-6"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -64,7 +64,7 @@ export default function UserDetailsBox({
           {/* 추가버튼 */}
           <button
             onClick={handleAdd}
-            className="edit-btn ml-8 mt-4 bg-white border border-gray-400 border-opacity-80 text-gray-900 hover:bg-opacity-50 hover:bg-gray-200 transition duration-100 ease-in-out mx-auto"
+            className="edit-btn ml-8 mt-px mb-2 bg-white border border-gray-400 border-opacity-80 text-gray-900 hover:bg-opacity-50 hover:bg-gray-200 transition duration-100 ease-in-out mx-auto"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

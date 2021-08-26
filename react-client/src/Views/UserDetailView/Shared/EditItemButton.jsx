@@ -1,6 +1,6 @@
-export default function EditItemButton({ position }) {
+export default function EditItemButton({ position, handleClick }) {
   return (
-    <button className={`edit-btn ${position}`}>
+    <button className={`edit-btn ${position}`} onClick={handleClick}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="h-5 w-5"
