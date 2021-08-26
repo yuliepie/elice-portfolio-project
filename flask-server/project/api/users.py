@@ -72,20 +72,24 @@ def logout():
 
 # View all users
 @users_blueprint.route("/users")
+@login_required
 def view_users():
     search_query = request.args.get("name", type=str)
     if search_query:
         print(search_query)
-        users = db.session.query(User.id, User.name, User.description).filter(
-            User.name.like(search_query + "%")
-        )
+        users = db.session.query(
+            User.id, User.name, User.description, User.imagePath
+        ).filter((User.name.like(search_query + "%")) & (User.id != current_user.id))
     else:
-        users = db.session.query(User.id, User.name, User.description).all()
+        users = (
+            db.session.query(User.id, User.name, User.description, User.imagePath)
+            .filter(User.id != current_user.id)
+            .all()
+        )
 
     result = [dict(user) for user in users]
     return jsonify(
         {
-            "result": 1,
             "users": result,
         }
     )

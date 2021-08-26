@@ -1,13 +1,14 @@
 import PageLayout from "../../Components/PageLayout";
-import { useAuth } from "../../Contexts/authContext";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import UserCard from "./UserCard";
+import { useAuth } from "../../Contexts/authContext";
 
 export default function MainPage() {
   const [users, setUsers] = useState(null);
   const [query, setQuery] = useState("");
+
+  const { currentUser } = useAuth();
 
   // API Fetch
   async function fetchAllUsers() {

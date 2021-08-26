@@ -24,6 +24,11 @@ export default function Routes() {
         <ProtectedRoute exact path="/users/my-page">
           <UserDetailPage myPage={true} />
         </ProtectedRoute>
+        {currentUser && (
+          <ProtectedRoute exact path={`/users/${currentUser.id}`}>
+            <Redirect to="/users/my-page" />
+          </ProtectedRoute>
+        )}
         <ProtectedRoute exact path="/users/:id">
           <UserDetailPage />
         </ProtectedRoute>

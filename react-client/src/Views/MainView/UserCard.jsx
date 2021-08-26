@@ -4,6 +4,7 @@ export default function UserCard({ user }) {
   const history = useHistory();
   const handleUserClick = () => {
     history.push(`/users/${user.id}`);
+    console.log(user);
   };
 
   return (
@@ -11,8 +12,15 @@ export default function UserCard({ user }) {
       className="bg-white rounded-lg h-auto w-60 flex-shrink-0 p-4 pt-6 pb-4 inline-flex flex-col justify-center items-center shadow-md border-gray-300 border border-opacity-80 cursor-pointer group hover:transform hover:scale-105 transition duration-300 ease-in-out origin-bottom active:bg-gray-200"
       onClick={handleUserClick}
     >
-      <div className="rounded-full h-20 w-20 bg-profile-img bg-contain shadow-xl" />
-      <div className="text-center text-lg mt-6 font-semibold text-gray-900 text-opacity-90">
+      <img
+        className="rounded-full h-24 w-24 shadow-xl"
+        src={
+          user.imagePath
+            ? `${process.env.REACT_APP_SERVER_DOMAIN}/${user.imagePath}`
+            : "https://i0.wp.com/prikachi.com/wp-content/uploads/2020/07/DPP1.jpg"
+        }
+      />
+      <div className="text-center text-lg mt-5 font-semibold text-gray-900 text-opacity-90">
         {user.name}
       </div>
       <p className="text-sm mt-1 text-gray-700 font-light">

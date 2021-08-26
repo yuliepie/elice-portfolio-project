@@ -61,6 +61,7 @@ class User(db.Model):
             "name": self.name,
             "email": self.email,
             "description": self.description,
+            "image": self.imagePath,
         }
 
 
