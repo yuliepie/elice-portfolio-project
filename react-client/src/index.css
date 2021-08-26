@@ -36,7 +36,7 @@
     width: 45%;
   }
   .user-profile-box {
-    @apply relative flex flex-col items-center w-72 mx-auto py-8 px-4 rounded-3xl border transition duration-300 ease-in-out;
+    @apply relative flex flex-col items-center w-72 mx-auto py-8 px-4 rounded-3xl border transition duration-200 ease-in-out;
   }
   .user-details-box {
     @apply relative w-full mb-6 pl-4 pr-8 pb-4 pt-6 rounded-3xl border transition duration-300 ease-in-out;

@@ -18,7 +18,7 @@ export default function ProfileBox({
     <div
       className={
         pageInEditMode
-          ? "user-profile-box bg-indigo-50 bg-opacity-90 border-gray-700 border-opacity-50 shadow-lg"
+          ? "user-profile-box bg-indigo-300 border-gray-700 border-opacity-50 shadow-lg"
           : "user-profile-box border-transparent"
       }
     >
