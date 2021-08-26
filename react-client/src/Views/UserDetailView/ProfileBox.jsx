@@ -9,6 +9,7 @@ export default function ProfileBox({
   image,
   handleProfileChange,
   handleImageChange,
+  changedImage,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const fileRef = useRef(null);
@@ -33,8 +34,10 @@ export default function ProfileBox({
             "opacity-70 pointer-events-auto cursor-pointer hover:opacity-40"
           }`}
           src={
-            image
+            changedImage
               ? image
+              : image
+              ? `${process.env.REACT_APP_SERVER_DOMAIN}/${image}`
               : "https://i0.wp.com/prikachi.com/wp-content/uploads/2020/07/DPP1.jpg"
           }
         />

@@ -137,13 +137,14 @@ def get_user_details(user_id):
             "certifications": certifications,
             "description": user.description,
             "name": user.name,
+            "image": user.imagePath,
         },
     }
-
     return jsonify(result)
 
 
 @user_details_blueprint.route("/users/<int:user_id>", methods=["PATCH"])
+@login_required
 def edit_user_information(user_id):
     """
     GETS: { name, description }
@@ -175,6 +176,7 @@ def edit_user_information(user_id):
 
 
 @user_details_blueprint.route("/users/<int:user_id>/image", methods=["POST"])
+@login_required
 def upload_profile_image(user_id):
     """
     GETS: image file
@@ -197,8 +199,10 @@ def upload_profile_image(user_id):
         profile_image.save(filepath)
 
         try:
+            relative_path = "./project"
+            path_to_save = os.path.relpath(filepath, relative_path)
             user = User.query.filter_by(id=user_id).first()
-            user.imagePath = filepath
+            user.imagePath = path_to_save
 
             db.session.commit()
             return jsonify({"filepath": filepath})

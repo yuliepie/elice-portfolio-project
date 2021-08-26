@@ -47,6 +47,7 @@ export default function UserDetailPage({ myPage }) {
       setAwards(user_details.awards);
       setProjects(user_details.projects);
       setCerts(user_details.certifications);
+      setImage(user_details.image);
     } catch (e) {
       console.log("error in getting user details:", e.message);
     }
@@ -309,6 +310,7 @@ export default function UserDetailPage({ myPage }) {
           newDetails.current = createInitialState();
           changedDetails.current = createInitialState();
           changedProfile.current = {};
+          changedImage.current = null;
         });
 
       setPageInEditMode(false);
@@ -328,6 +330,7 @@ export default function UserDetailPage({ myPage }) {
           image={image}
           handleProfileChange={handleProfileChange}
           handleImageChange={handleImageChange}
+          changedImage={changedImage.current}
         />
       </div>
       <div className="user-details flex flex-col bg-opacity-20 flex-1 py-10 pl-16 pr-4 overflow-y-auto">

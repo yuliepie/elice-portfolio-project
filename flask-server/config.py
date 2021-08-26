@@ -15,7 +15,7 @@ class Config(object):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    IMAGE_FOLDER = "./elice-profile-images"
+    IMAGE_FOLDER = os.getenv("IMAGE_FOLDER", default="./project/static/profile-images")
 
 
 class ProductionConfig(Config):
