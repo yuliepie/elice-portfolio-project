@@ -112,7 +112,6 @@ export default function UserDetailPage({ myPage }) {
       item[name] = value;
     } else {
       // If CHANGED ITEM:
-      console.log("handling change...", changedList);
       const item = changedList.filter((item) => item.id === id)[0];
       if (item) {
         item[name] = value;
@@ -122,7 +121,6 @@ export default function UserDetailPage({ myPage }) {
           [name]: value,
         });
       }
-      console.log("handled change...", changedList);
     }
   };
 
@@ -352,6 +350,7 @@ export default function UserDetailPage({ myPage }) {
           fetchUserDetails();
           newDetails.current = createInitialState();
           changedDetails.current = createInitialState();
+          deletedDetails.current = createInitialState();
           changedProfile.current = {};
           changedImage.current = null;
         });
@@ -419,6 +418,15 @@ export default function UserDetailPage({ myPage }) {
               changedDetails.current.awards
             )
           }
+          handleDelete={(id) => {
+            handleDelete(
+              id,
+              setAwards,
+              newDetails.current.awards,
+              changedDetails.current.awards,
+              deletedDetails.current.awards
+            );
+          }}
         />
         <ProjectsBox
           projects={projects}
@@ -436,6 +444,15 @@ export default function UserDetailPage({ myPage }) {
               changedDetails.current.projects
             )
           }
+          handleDelete={(id) => {
+            handleDelete(
+              id,
+              setProjects,
+              newDetails.current.projects,
+              changedDetails.current.projects,
+              deletedDetails.current.projects
+            );
+          }}
         />
         <CertsBox
           certs={certs}
@@ -453,6 +470,15 @@ export default function UserDetailPage({ myPage }) {
               changedDetails.current.certs
             )
           }
+          handleDelete={(id) => {
+            handleDelete(
+              id,
+              setCerts,
+              newDetails.current.certs,
+              changedDetails.current.certs,
+              deletedDetails.current.certs
+            );
+          }}
         />
       </div>
       <div className="fixed inset-y-20 right-0 w-1/5 h-full flex flex-col py-4 px-2 justify-start items-start">

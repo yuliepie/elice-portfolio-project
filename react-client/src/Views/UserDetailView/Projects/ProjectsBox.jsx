@@ -10,6 +10,7 @@ export default function ProjectsBox({
   handleChange,
   handleAdd,
   validate,
+  handleDelete,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -33,6 +34,7 @@ export default function ProjectsBox({
                 handleChange={handleChange}
                 key={proj.id}
                 project={proj}
+                handleDelete={() => handleDelete(proj.id)}
               />
             )))}
     </UserDetailsBox>

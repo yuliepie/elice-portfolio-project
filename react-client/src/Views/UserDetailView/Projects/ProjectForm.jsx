@@ -1,6 +1,8 @@
-export default function ProjectForm({ project, handleChange }) {
+import DeleteButton from "../Shared/DeleteButton";
+
+export default function ProjectForm({ project, handleChange, handleDelete }) {
   return (
-    <div className="py-4">
+    <div className="py-4 relative">
       <input
         type="text"
         className="details-form-style w-1/2"
@@ -43,6 +45,7 @@ export default function ProjectForm({ project, handleChange }) {
         </label>
         <span className="text-gray-700 font-bold"> 까지 </span>
       </div>
+      <DeleteButton handleDelete={handleDelete} />
     </div>
   );
 }

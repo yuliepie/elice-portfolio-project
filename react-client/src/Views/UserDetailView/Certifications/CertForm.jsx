@@ -1,6 +1,8 @@
-export default function CertForm({ cert, handleChange }) {
+import DeleteButton from "../Shared/DeleteButton";
+
+export default function CertForm({ cert, handleChange, handleDelete }) {
   return (
-    <div className="py-4">
+    <div className="py-4 relative">
       <input
         type="text"
         className="details-form-style w-1/2"
@@ -28,6 +30,7 @@ export default function CertForm({ cert, handleChange }) {
           <span className="text-gray-700 font-bold">에 취득.</span>
         </label>
       </div>
+      <DeleteButton handleDelete={handleDelete} />
     </div>
   );
 }

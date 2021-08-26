@@ -10,6 +10,7 @@ export default function AwardsBox({
   handleChange,
   handleAdd,
   validate,
+  handleDelete,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -31,6 +32,7 @@ export default function AwardsBox({
                 handleChange={handleChange}
                 key={award.id}
                 award={award}
+                handleDelete={() => handleDelete(award.id)}
               />
             )))}
     </UserDetailsBox>

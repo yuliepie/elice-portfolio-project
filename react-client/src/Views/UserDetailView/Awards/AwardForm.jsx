@@ -1,6 +1,8 @@
-export default function AwardForm({ award, handleChange }) {
+import DeleteButton from "../Shared/DeleteButton";
+
+export default function AwardForm({ award, handleChange, handleDelete }) {
   return (
-    <div className="pt-4 pb-4">
+    <div className="pt-4 pb-4 relative">
       <input
         type="text"
         className="details-form-style w-1/2"
@@ -15,6 +17,7 @@ export default function AwardForm({ award, handleChange }) {
         value={award.description}
         onChange={(e) => handleChange(award.id, "description", e.target.value)}
       />
+      <DeleteButton handleDelete={handleDelete} />
     </div>
   );
 }

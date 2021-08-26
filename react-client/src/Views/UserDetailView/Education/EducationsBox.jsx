@@ -34,7 +34,7 @@ export default function EducationsBox({
                 handleChange={handleChange}
                 key={edu.id}
                 education={edu}
-                handleDelete={handleDelete}
+                handleDelete={() => handleDelete(edu.id)}
               />
             )))}
     </UserDetailsBox>

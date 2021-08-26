@@ -10,6 +10,7 @@ export default function CertsBox({
   handleChange,
   handleAdd,
   validate,
+  handleDelete,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -27,7 +28,12 @@ export default function CertsBox({
         (!isEditing
           ? certs.map((cert) => <CertDetail key={cert.id} cert={cert} />)
           : certs.map((cert) => (
-              <CertForm handleChange={handleChange} key={cert.id} cert={cert} />
+              <CertForm
+                handleChange={handleChange}
+                key={cert.id}
+                cert={cert}
+                handleDelete={() => handleDelete(cert.id)}
+              />
             )))}
     </UserDetailsBox>
   );
