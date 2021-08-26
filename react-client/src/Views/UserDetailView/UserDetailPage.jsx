@@ -7,7 +7,7 @@ import EducationsBox from "./Education/EducationsBox";
 import AwardsBox from "./Awards/AwardsBox";
 import ProjectsBox from "./Projects/ProjectsBox";
 import CertsBox from "./Certifications/CertsBox";
-import EditItemButton from "./Shared/EditItemButton";
+import ProfileBox from "./ProfileBox";
 
 export default function UserDetailPage({ myPage }) {
   const [name, setName] = useState(null);
@@ -28,6 +28,7 @@ export default function UserDetailPage({ myPage }) {
 
   const changedDetails = useRef(createInitialState()); // Changed Details - for PATCH request
   const newDetails = useRef(createInitialState()); // New details - for POST request
+  const changedProfile = useRef({});
 
   // API Fetch
   let { id } = useParams();
@@ -38,12 +39,12 @@ export default function UserDetailPage({ myPage }) {
     try {
       const response = await axios.get(`/api/users/${searchId}`);
       const { user_details } = response.data;
+      setName(user_details.name);
       setDescription(user_details.description);
       setEducations(user_details.educations);
       setAwards(user_details.awards);
       setProjects(user_details.projects);
       setCerts(user_details.certifications);
-      setName(user_details.name);
     } catch (e) {
       console.log("error in getting user details:", e.message);
     }
@@ -72,6 +73,17 @@ export default function UserDetailPage({ myPage }) {
   //========================
   // Change Handlers
   //========================
+
+  // Change handler for name & description
+  const handleProfileChange = (e) => {
+    const attribute = e.target.name;
+    if (attribute === "name") {
+      setName(e.target.value);
+    } else if (attribute == "description") {
+      setDescription(e.target.value);
+    }
+    changedProfile.current[attribute] = e.target.value;
+  };
 
   // Common Change Handler for all boxes
   const handleChange = (id, name, value, setState, newList, changedList) => {
@@ -150,12 +162,17 @@ export default function UserDetailPage({ myPage }) {
   const handleSave = () => {
     if (!boxesInEdit) {
       // Check something has changed
+      const noProfileChange =
+        !("name" in changedProfile.current) &&
+        !("description" in changedProfile.current);
+
       const {
         educations: newEdu,
         awards: newAward,
         projects: newProj,
         certs: newCert,
       } = newDetails.current;
+
       const nothingToPost =
         !newEdu.length &&
         !newAward.length &&
@@ -168,13 +185,14 @@ export default function UserDetailPage({ myPage }) {
         projects: changedProj,
         certs: changedCert,
       } = changedDetails.current;
+
       const nothingToPatch =
         !changedEdu.length &&
         !changedAward.length &&
         !changedProj.length &&
         !changedCert.length;
 
-      if (nothingToPost && nothingToPatch) {
+      if (nothingToPost && nothingToPatch && noProfileChange) {
         setPageInEditMode(false);
         return;
       }
@@ -252,6 +270,12 @@ export default function UserDetailPage({ myPage }) {
         );
       });
 
+      if (!noProfileChange) {
+        promises.push(
+          axios.patch(`/api/users/${searchId}`, changedProfile.current)
+        );
+      }
+
       Promise.all(promises)
         .then(() => alert("업데이트 성공!"))
         .catch((e) => alert("failed."))
@@ -270,32 +294,13 @@ export default function UserDetailPage({ myPage }) {
   return (
     <PageLayout>
       <div className="fixed inset-x-0 top-20 pt-10 h-full w-4/12 bg-indigo-400">
-        <div
-          className={
-            pageInEditMode
-              ? "user-profile-box bg-indigo-50 bg-opacity-90 border-gray-700 border-opacity-50 shadow-2xl"
-              : "user-profile-box border-transparent"
-          }
-        >
-          <div className="w-48 h-48 rounded-full bg-detail-profile-img bg-contain shadow-2xl" />
-          <h3
-            className={`mt-6 text-4xl font-bold shared-transition ${
-              pageInEditMode ? "text-gray-800" : "text-white"
-            }`}
-          >
-            {name}
-          </h3>
-          <p
-            className={`mt-3 text-base font-medium shared-transition ${
-              pageInEditMode ? "text-gray-700" : "text-indigo-50"
-            }`}
-          >
-            {description}
-          </p>
-          {pageInEditMode && (
-            <EditItemButton position="absolute -top-2 -right-2" />
-          )}
-        </div>
+        <ProfileBox
+          pageInEditMode={pageInEditMode}
+          setBoxesInEdit={setBoxesInEdit}
+          name={name}
+          description={description}
+          handleProfileChange={handleProfileChange}
+        />
       </div>
       <div className="user-details flex flex-col bg-opacity-20 flex-1 py-10 pl-16 pr-4 overflow-y-auto">
         <EducationsBox

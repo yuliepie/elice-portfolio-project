@@ -133,6 +133,37 @@ def get_user_details(user_id):
     return jsonify(result)
 
 
+@user_details_blueprint.route("/users/<int:user_id>", methods=["PATCH"])
+def edit_user_information(user_id):
+    """
+    GETS: { name, description }
+    RETURNS: {result: 1, message: "Education created.", education_id: 1}
+    """
+    if not user_id_authorized(user_id, current_user.id):
+        return jsonify(NOT_AUTHORIZED), 401
+
+    new_data = request.json
+    print(new_data)
+    new_name = new_data.get("name")
+    new_description = new_data.get("description")
+
+    try:
+        user = User.query.filter_by(id=user_id).first()
+        if new_name is not None and user.name != new_name:
+            user.name = new_name
+        if new_description is not None and user.description != new_description:
+            user.description = new_description
+
+        db.session.commit()
+        return jsonify({"name": user.name, "description": user.description})
+    except:
+        db.session.rollback()
+        return (
+            jsonify({"result": "fail"}),
+            500,
+        )
+
+
 @user_details_blueprint.route("/users/<int:user_id>/educations", methods=["POST"])
 @login_required
 def post_education_detail(user_id):
@@ -144,7 +175,6 @@ def post_education_detail(user_id):
         return jsonify(NOT_AUTHORIZED), 401
 
     new_data = request.json
-    print("NEW DATA", new_data)
     return post_details_helper(new_data, Education, current_user.id)
 
 
