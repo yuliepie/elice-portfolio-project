@@ -10,6 +10,7 @@ export default function EducationsBox({
   handleChange,
   handleAdd,
   validate,
+  handleDelete,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -33,6 +34,7 @@ export default function EducationsBox({
                 handleChange={handleChange}
                 key={edu.id}
                 education={edu}
+                handleDelete={handleDelete}
               />
             )))}
     </UserDetailsBox>

@@ -78,10 +78,7 @@ def edit_details_helper(edit_data, model, detail_id):
     """
     try:
         current_app.logger.debug(f"Trying edit...")
-        current_app.logger.debug(f"")
-
         edit_row = db.session.query(model).filter_by(id=detail_id).first()
-        current_app.logger.debug(f"row to edit: {edit_row}")
 
         for key, val in edit_data.items():
             setattr(edit_row, key, val)
@@ -99,6 +96,21 @@ def edit_details_helper(edit_data, model, detail_id):
             jsonify({"result": 0, "message": f"Failed to update {model.__name__}."}),
             500,
         )
+
+
+def delete_details_helper(delete_id, model):
+    """
+    For delete id received for a particular model,
+    Delete the record and commit the change to the database.
+    """
+    try:
+        delete_row = db.session.query(model).filter_by(id=delete_id).first()
+        db.session.delete(delete_row)
+        db.session.commit()
+        return jsonify({"id": delete_id})
+    except:
+        db.session.rollback()
+        return f"failed to delete data for {model.__name__}.", 500
 
 
 def user_id_authorized(user_id, current_user_id):
@@ -211,6 +223,11 @@ def upload_profile_image(user_id):
             return ("Faild to save image.", 500)
 
 
+###################
+# Education
+###################
+
+
 @user_details_blueprint.route("/users/<int:user_id>/educations", methods=["POST"])
 @login_required
 def post_education_detail(user_id):
@@ -244,6 +261,28 @@ def edit_education_detail(user_id, id):
     return edit_details_helper(edit_data, Education, id)
 
 
+@user_details_blueprint.route(
+    "/users/<int:user_id>/educations/<int:id>", methods=["DELETE"]
+)
+@login_required
+def delete_education_detail(user_id, id):
+    """
+    GETS: { id }
+    RETURNS: { deleted: id }
+    """
+    if not user_id_authorized(user_id, current_user.id):
+        return jsonify(NOT_AUTHORIZED), 401
+    if not detail_id_authorized_for_user(Education, current_user.id, id):
+        return jsonify(NOT_AUTHORIZED), 401
+
+    return delete_details_helper(id, Education)
+
+
+###################
+# Award
+###################
+
+
 @user_details_blueprint.route("/users/<int:user_id>/awards", methods=["POST"])
 @login_required
 def post_award_detail(user_id):
@@ -272,6 +311,11 @@ def edit_award_detail(user_id, id):
 
     edit_data = request.json
     return edit_details_helper(edit_data, Award, id)
+
+
+###################
+# Project
+###################
 
 
 @user_details_blueprint.route("/users/<int:user_id>/projects", methods=["POST"])
@@ -304,6 +348,11 @@ def edit_project_detail(user_id, id):
 
     edit_data = request.json
     return edit_details_helper(edit_data, Project, id)
+
+
+###################
+# Certification
+###################
 
 
 @user_details_blueprint.route("/users/<int:user_id>/certifications", methods=["POST"])

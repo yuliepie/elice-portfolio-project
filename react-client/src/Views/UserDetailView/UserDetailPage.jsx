@@ -29,6 +29,7 @@ export default function UserDetailPage({ myPage }) {
 
   const changedDetails = useRef(createInitialState()); // Changed Details - for PATCH request
   const newDetails = useRef(createInitialState()); // New details - for POST request
+  const deletedDetails = useRef(createInitialState()); // Deleted details - for DELETE request
   const changedProfile = useRef({});
   const changedImage = useRef(null);
 
@@ -111,6 +112,7 @@ export default function UserDetailPage({ myPage }) {
       item[name] = value;
     } else {
       // If CHANGED ITEM:
+      console.log("handling change...", changedList);
       const item = changedList.filter((item) => item.id === id)[0];
       if (item) {
         item[name] = value;
@@ -120,7 +122,23 @@ export default function UserDetailPage({ myPage }) {
           [name]: value,
         });
       }
+      console.log("handled change...", changedList);
     }
+  };
+
+  // Common Delete Handler for all boxes
+  const handleDelete = (id, setState, newList, changedList, deletedList) => {
+    if (id[0] === "n") {
+      const index = newList.findIndex((item) => item.id == id);
+      newList.splice(index);
+    } else {
+      const index = changedList.findIndex((item) => item.id == id);
+      changedList.splice(index);
+      deletedList.push(id);
+    }
+    setState((prevList) => {
+      return prevList.filter((item) => item.id !== id);
+    });
   };
 
   const handleNewEducation = () => {
@@ -170,136 +188,161 @@ export default function UserDetailPage({ myPage }) {
   //===================
   // ON SAVE
   //===================
+  const checkModification = (modificationSet) => {
+    for (const detailList in modificationSet) {
+      if (modificationSet[detailList].length > 0) {
+        return true;
+      }
+    }
+  };
 
   const handleSave = () => {
     if (!boxesInEdit) {
       // Check something has changed
-      const noProfileChange =
-        !("name" in changedProfile.current) &&
-        !("description" in changedProfile.current);
+      const someProfileChange =
+        "name" in changedProfile.current ||
+        "description" in changedProfile.current;
 
-      const noImageChange = !changedImage.current;
+      const someImageChange = changedImage.current;
 
-      const {
-        educations: newEdu,
-        awards: newAward,
-        projects: newProj,
-        certs: newCert,
-      } = newDetails.current;
+      const somethingToPost = checkModification(newDetails.current);
+      const somethingToPatch = checkModification(changedDetails.current);
+      const somethingToDelete = checkModification(deletedDetails.current);
 
-      const nothingToPost =
-        !newEdu.length &&
-        !newAward.length &&
-        !newProj.length &&
-        !newCert.length;
-
-      const {
-        educations: changedEdu,
-        awards: changedAward,
-        projects: changedProj,
-        certs: changedCert,
-      } = changedDetails.current;
-
-      const nothingToPatch =
-        !changedEdu.length &&
-        !changedAward.length &&
-        !changedProj.length &&
-        !changedCert.length;
-
-      if (nothingToPost && nothingToPatch && noProfileChange && noImageChange) {
+      if (
+        !somethingToPost &&
+        !somethingToPatch &&
+        !somethingToDelete &&
+        !someProfileChange &&
+        !someImageChange
+      ) {
         setPageInEditMode(false);
         return;
       }
 
+      // TODO: REFACTOR
       //--------
       // POST:
       //--------
       const promises = [];
 
-      newDetails.current.educations.forEach((edu) => {
-        const formattedEdu = [];
-        formattedEdu.push(["school_name", edu.school_name]);
-        formattedEdu.push(["major", edu.major]);
-        formattedEdu.push(["status_id", parseInt(edu.status_id)]);
-        promises.push(
-          axios.post(`/api/users/${searchId}/educations`, formattedEdu)
-        );
-      });
+      if (somethingToPost) {
+        newDetails.current.educations.forEach((edu) => {
+          const formattedEdu = [];
+          formattedEdu.push(["school_name", edu.school_name]);
+          formattedEdu.push(["major", edu.major]);
+          formattedEdu.push(["status_id", parseInt(edu.status_id)]);
+          promises.push(
+            axios.post(`/api/users/${searchId}/educations`, formattedEdu)
+          );
+        });
 
-      newDetails.current.awards.forEach((award) => {
-        const formattedAward = [];
-        formattedAward.push(["name", award.name]);
-        formattedAward.push(["description", award.description]);
-        promises.push(
-          axios.post(`/api/users/${searchId}/awards`, formattedAward)
-        );
-      });
+        newDetails.current.awards.forEach((award) => {
+          const formattedAward = [];
+          formattedAward.push(["name", award.name]);
+          formattedAward.push(["description", award.description]);
+          promises.push(
+            axios.post(`/api/users/${searchId}/awards`, formattedAward)
+          );
+        });
 
-      newDetails.current.projects.forEach((proj) => {
-        const formattedProj = [];
-        formattedProj.push(["name", proj.name]);
-        formattedProj.push(["description", proj.description]);
-        formattedProj.push(["start_date", proj.start_date]);
-        formattedProj.push(["end_date", proj.end_date]);
-        promises.push(
-          axios.post(`/api/users/${searchId}/projects`, formattedProj)
-        );
-      });
+        newDetails.current.projects.forEach((proj) => {
+          const formattedProj = [];
+          formattedProj.push(["name", proj.name]);
+          formattedProj.push(["description", proj.description]);
+          formattedProj.push(["start_date", proj.start_date]);
+          formattedProj.push(["end_date", proj.end_date]);
+          promises.push(
+            axios.post(`/api/users/${searchId}/projects`, formattedProj)
+          );
+        });
 
-      newDetails.current.certs.forEach((cert) => {
-        const formattedCert = [];
-        formattedCert.push(["name", cert.name]);
-        formattedCert.push(["provider", cert.provider]);
-        formattedCert.push(["acquired_date", cert.acquired_date]);
-        promises.push(
-          axios.post(`/api/users/${searchId}/certifications`, formattedCert)
-        );
-      });
+        newDetails.current.certs.forEach((cert) => {
+          const formattedCert = [];
+          formattedCert.push(["name", cert.name]);
+          formattedCert.push(["provider", cert.provider]);
+          formattedCert.push(["acquired_date", cert.acquired_date]);
+          promises.push(
+            axios.post(`/api/users/${searchId}/certifications`, formattedCert)
+          );
+        });
 
-      if (!noImageChange) {
-        let imageData = new FormData();
-        imageData.append("profile_image", changedImage.current);
-        promises.push(
-          axios.post(`/api/users/${searchId}/image`, imageData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-        );
+        if (someImageChange) {
+          let imageData = new FormData();
+          imageData.append("profile_image", changedImage.current);
+          promises.push(
+            axios.post(`/api/users/${searchId}/image`, imageData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+          );
+        }
       }
 
       //---------
       // PATCH:
       //---------
 
-      changedDetails.current.educations.forEach((edu) => {
-        promises.push(
-          axios.patch(`/api/users/${searchId}/educations/${edu.id}`, edu)
-        );
-      });
+      if (somethingToPatch) {
+        changedDetails.current.educations.forEach((edu) => {
+          promises.push(
+            axios.patch(`/api/users/${searchId}/educations/${edu.id}`, edu)
+          );
+        });
 
-      changedDetails.current.awards.forEach((award) => {
-        promises.push(
-          axios.patch(`/api/users/${searchId}/awards/${award.id}`, award)
-        );
-      });
+        changedDetails.current.awards.forEach((award) => {
+          promises.push(
+            axios.patch(`/api/users/${searchId}/awards/${award.id}`, award)
+          );
+        });
 
-      changedDetails.current.projects.forEach((proj) => {
-        promises.push(
-          axios.patch(`/api/users/${searchId}/projects/${proj.id}`, proj)
-        );
-      });
+        changedDetails.current.projects.forEach((proj) => {
+          promises.push(
+            axios.patch(`/api/users/${searchId}/projects/${proj.id}`, proj)
+          );
+        });
 
-      changedDetails.current.certs.forEach((cert) => {
-        promises.push(
-          axios.patch(`/api/users/${searchId}/certifications/${cert.id}`, cert)
-        );
-      });
+        changedDetails.current.certs.forEach((cert) => {
+          promises.push(
+            axios.patch(
+              `/api/users/${searchId}/certifications/${cert.id}`,
+              cert
+            )
+          );
+        });
+      }
 
-      if (!noProfileChange) {
+      if (someProfileChange) {
         promises.push(
           axios.patch(`/api/users/${searchId}`, changedProfile.current)
         );
+      }
+
+      //---------
+      // DELETE:
+      //---------
+
+      if (somethingToDelete) {
+        deletedDetails.current.educations.forEach((id) => {
+          promises.push(
+            axios.delete(`/api/users/${searchId}/educations/${id}`)
+          );
+        });
+
+        deletedDetails.current.awards.forEach((id) => {
+          promises.push(axios.delete(`/api/users/${searchId}/awards/${id}`));
+        });
+
+        deletedDetails.current.projects.forEach((id) => {
+          promises.push(axios.delete(`/api/users/${searchId}/projects/${id}`));
+        });
+
+        deletedDetails.current.certs.forEach((id) => {
+          promises.push(
+            axios.delete(`/api/users/${searchId}/certifications/${id}`)
+          );
+        });
       }
 
       Promise.all(promises)
@@ -350,6 +393,15 @@ export default function UserDetailPage({ myPage }) {
               changedDetails.current.educations
             )
           }
+          handleDelete={(id) => {
+            handleDelete(
+              id,
+              setEducations,
+              newDetails.current.educations,
+              changedDetails.current.educations,
+              deletedDetails.current.educations
+            );
+          }}
         />
         <AwardsBox
           awards={awards}
