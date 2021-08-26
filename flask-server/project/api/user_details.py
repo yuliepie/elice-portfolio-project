@@ -268,7 +268,7 @@ def edit_education_detail(user_id, id):
 def delete_education_detail(user_id, id):
     """
     GETS: { id }
-    RETURNS: { deleted: id }
+    RETURNS: { id: deleted id }
     """
     if not user_id_authorized(user_id, current_user.id):
         return jsonify(NOT_AUTHORIZED), 401
@@ -313,6 +313,23 @@ def edit_award_detail(user_id, id):
     return edit_details_helper(edit_data, Award, id)
 
 
+@user_details_blueprint.route(
+    "/users/<int:user_id>/awards/<int:id>", methods=["DELETE"]
+)
+@login_required
+def delete_award_detail(user_id, id):
+    """
+    GETS: { id }
+    RETURNS: { id: deleted id }
+    """
+    if not user_id_authorized(user_id, current_user.id):
+        return jsonify(NOT_AUTHORIZED), 401
+    if not detail_id_authorized_for_user(Award, current_user.id, id):
+        return jsonify(NOT_AUTHORIZED), 401
+
+    return delete_details_helper(id, Award)
+
+
 ###################
 # Project
 ###################
@@ -350,6 +367,23 @@ def edit_project_detail(user_id, id):
     return edit_details_helper(edit_data, Project, id)
 
 
+@user_details_blueprint.route(
+    "/users/<int:user_id>/projects/<int:id>", methods=["DELETE"]
+)
+@login_required
+def delete_project_detail(user_id, id):
+    """
+    GETS: { id }
+    RETURNS: { id: deleted id }
+    """
+    if not user_id_authorized(user_id, current_user.id):
+        return jsonify(NOT_AUTHORIZED), 401
+    if not detail_id_authorized_for_user(Project, current_user.id, id):
+        return jsonify(NOT_AUTHORIZED), 401
+
+    return delete_details_helper(id, Project)
+
+
 ###################
 # Certification
 ###################
@@ -385,6 +419,23 @@ def edit_certification_detail(user_id, id):
 
     edit_data = request.json
     return edit_details_helper(edit_data, Certification, id)
+
+
+@user_details_blueprint.route(
+    "/users/<int:user_id>/certifications/<int:id>", methods=["DELETE"]
+)
+@login_required
+def delete_certification_detail(user_id, id):
+    """
+    GETS: { id }
+    RETURNS: { id: deleted id }
+    """
+    if not user_id_authorized(user_id, current_user.id):
+        return jsonify(NOT_AUTHORIZED), 401
+    if not detail_id_authorized_for_user(Certification, current_user.id, id):
+        return jsonify(NOT_AUTHORIZED), 401
+
+    return delete_details_helper(id, Certification)
 
 
 ####################
