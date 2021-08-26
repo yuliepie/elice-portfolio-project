@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AwardDetail from "./AwardDetail";
 import AwardForm from "./AwardForm";
-import UserDetailsBox from "../UserDetailsBox";
+import UserDetailsBox from "../Shared/UserDetailsBox";
 
 export default function AwardsBox({
   awards,

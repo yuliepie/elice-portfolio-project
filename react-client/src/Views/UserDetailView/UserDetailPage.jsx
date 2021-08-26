@@ -177,6 +177,7 @@ export default function UserDetailPage({ myPage }) {
         setPageInEditMode(false);
         return;
       }
+
       //--------
       // POST:
       //--------
@@ -267,14 +268,22 @@ export default function UserDetailPage({ myPage }) {
 
   return (
     <PageLayout>
-      <div className="fixed inset-x-0 top-20 pt-20 h-full flex flex-col items-center w-4/12 bg-indigo-400">
-        <div className="bg-gray-300 w-48 h-48 rounded-full bg-detail-profile-img bg-contain shadow-2xl" />
-        <h3 className="mt-6 text-white text-4xl font-bold">{name}</h3>
-        <p className="mt-3 text-indigo-50 text-base font-medium">
-          {description}
-        </p>
+      <div className="fixed inset-x-0 top-20 pt-10 h-full w-4/12 bg-indigo-400">
+        <div
+          className={
+            pageInEditMode
+              ? "user-profile-box border-gray-700"
+              : "user-profile-box border-transparent"
+          }
+        >
+          <div className="w-48 h-48 rounded-full bg-detail-profile-img bg-contain shadow-2xl" />
+          <h3 className="mt-6 text-white text-4xl font-bold">{name}</h3>
+          <p className="mt-3 text-indigo-50 text-base font-medium">
+            {description}
+          </p>
+        </div>
       </div>
-      <div className="user-details w-5/12 flex flex-col bg-opacity-20 flex-1 py-16 pl-16  overflow-y-auto">
+      <div className="user-details w-5/12 flex flex-col bg-opacity-20 flex-1 py-10 pl-16  overflow-y-auto">
         <EducationsBox
           educations={educations}
           pageInEditMode={pageInEditMode}

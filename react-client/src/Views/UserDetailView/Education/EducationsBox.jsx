@@ -1,5 +1,5 @@
 import { useState } from "react";
-import UserDetailsBox from "../UserDetailsBox";
+import UserDetailsBox from "../Shared/UserDetailsBox";
 import EducationDetail from "./EducationDetail";
 import EducationForm from "./EducationForm";
 

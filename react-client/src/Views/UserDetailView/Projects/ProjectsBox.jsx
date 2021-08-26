@@ -1,4 +1,4 @@
-import UserDetailsBox from "../UserDetailsBox";
+import UserDetailsBox from "../Shared/UserDetailsBox";
 import ProjectDetail from "./ProjectDetail";
 import ProjectForm from "./ProjectForm";
 import { useState } from "react";
