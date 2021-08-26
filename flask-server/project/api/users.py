@@ -79,7 +79,9 @@ def view_users():
         print(search_query)
         users = db.session.query(
             User.id, User.name, User.description, User.imagePath
-        ).filter((User.name.like(search_query + "%")) & (User.id != current_user.id))
+        ).filter(
+            (User.name.like("%" + search_query + "%")) & (User.id != current_user.id)
+        )
     else:
         users = (
             db.session.query(User.id, User.name, User.description, User.imagePath)
