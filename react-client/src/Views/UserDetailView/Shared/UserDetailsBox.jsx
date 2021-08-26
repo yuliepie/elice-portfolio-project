@@ -14,7 +14,7 @@ export default function UserDetailsBox({
     <div
       className={
         pageInEditMode
-          ? "user-details-box border-gray-700 border-opacity-50"
+          ? "user-details-box border-gray-700 border-opacity-50 shadow-sm"
           : "user-details-box border-transparent"
       }
     >

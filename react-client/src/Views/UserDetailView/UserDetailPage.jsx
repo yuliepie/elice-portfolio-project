@@ -283,6 +283,7 @@ export default function UserDetailPage({ myPage }) {
           fetchUserDetails();
           newDetails.current = createInitialState();
           changedDetails.current = createInitialState();
+          changedProfile.current = {};
         });
 
       setPageInEditMode(false);
