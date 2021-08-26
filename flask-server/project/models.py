@@ -22,6 +22,7 @@ class User(db.Model):
     password_hashed = db.Column(db.String(60), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(100), nullable=True)
+    imagePath = db.Column(db.String(255), nullable=True)
 
     educations = db.relationship("Education", backref="user", lazy=True)
     awards = db.relationship("Award", backref="user", lazy=True)

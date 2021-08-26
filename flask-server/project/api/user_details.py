@@ -1,9 +1,11 @@
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
 from . import user_details_blueprint
 from flask import json, jsonify, current_app, request
 from project.models import User, Education, Award, Project, Certification
 from project import db
 from datetime import date, datetime
+import os
 
 NOT_AUTHORIZED = {"result": 0, "message": "Not authorized."}
 
@@ -30,6 +32,14 @@ def parse_date_helper(data):
 
     current_app.logger.debug(f"parsed list: {parsed}")
     return parsed
+
+
+def validate_image_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in {
+        "png",
+        "jpg",
+        "jpeg",
+    }
 
 
 def post_details_helper(new_data, model, current_user_id):
@@ -137,7 +147,7 @@ def get_user_details(user_id):
 def edit_user_information(user_id):
     """
     GETS: { name, description }
-    RETURNS: {result: 1, message: "Education created.", education_id: 1}
+    RETURNS: {name, description}
     """
     if not user_id_authorized(user_id, current_user.id):
         return jsonify(NOT_AUTHORIZED), 401
@@ -162,6 +172,39 @@ def edit_user_information(user_id):
             jsonify({"result": "fail"}),
             500,
         )
+
+
+@user_details_blueprint.route("/users/<int:user_id>/image", methods=["POST"])
+def upload_profile_image(user_id):
+    """
+    GETS: image file
+    RETURNS: image path
+    """
+    if not user_id_authorized(user_id, current_user.id):
+        return jsonify(NOT_AUTHORIZED), 401
+
+    if "profile_image" not in request.files:
+        return "No file uploaded.", 404
+
+    profile_image = request.files["profile_image"]
+    if profile_image.filename == "":
+        return "No file uploaded.", 404
+
+    # If image exists and is valid
+    if profile_image and validate_image_file(profile_image.filename):
+        filename = secure_filename(profile_image.filename)
+        filepath = os.path.join(current_app.config["IMAGE_FOLDER"], filename)
+        profile_image.save(filepath)
+
+        try:
+            user = User.query.filter_by(id=user_id).first()
+            user.imagePath = filepath
+
+            db.session.commit()
+            return jsonify({"filepath": filepath})
+        except:
+            db.session.rollback()
+            return ("Faild to save image.", 500)
 
 
 @user_details_blueprint.route("/users/<int:user_id>/educations", methods=["POST"])

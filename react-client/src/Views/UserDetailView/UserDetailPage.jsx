@@ -12,6 +12,7 @@ import ProfileBox from "./ProfileBox";
 export default function UserDetailPage({ myPage }) {
   const [name, setName] = useState(null);
   const [description, setDescription] = useState(null);
+  const [image, setImage] = useState(null);
   const [educations, setEducations] = useState(null);
   const [awards, setAwards] = useState(null);
   const [projects, setProjects] = useState(null);
@@ -29,6 +30,7 @@ export default function UserDetailPage({ myPage }) {
   const changedDetails = useRef(createInitialState()); // Changed Details - for PATCH request
   const newDetails = useRef(createInitialState()); // New details - for POST request
   const changedProfile = useRef({});
+  const changedImage = useRef(null);
 
   // API Fetch
   let { id } = useParams();
@@ -83,6 +85,15 @@ export default function UserDetailPage({ myPage }) {
       setDescription(e.target.value);
     }
     changedProfile.current[attribute] = e.target.value;
+  };
+
+  // Change handler for image
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const newImage = e.target.files[0];
+      setImage(URL.createObjectURL(newImage));
+      changedImage.current = newImage;
+    }
   };
 
   // Common Change Handler for all boxes
@@ -166,6 +177,8 @@ export default function UserDetailPage({ myPage }) {
         !("name" in changedProfile.current) &&
         !("description" in changedProfile.current);
 
+      const noImageChange = !changedImage.current;
+
       const {
         educations: newEdu,
         awards: newAward,
@@ -192,7 +205,7 @@ export default function UserDetailPage({ myPage }) {
         !changedProj.length &&
         !changedCert.length;
 
-      if (nothingToPost && nothingToPatch && noProfileChange) {
+      if (nothingToPost && nothingToPatch && noProfileChange && noImageChange) {
         setPageInEditMode(false);
         return;
       }
@@ -241,6 +254,18 @@ export default function UserDetailPage({ myPage }) {
           axios.post(`/api/users/${searchId}/certifications`, formattedCert)
         );
       });
+
+      if (!noImageChange) {
+        let imageData = new FormData();
+        imageData.append("profile_image", changedImage.current);
+        promises.push(
+          axios.post(`/api/users/${searchId}/image`, imageData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+        );
+      }
 
       //---------
       // PATCH:
@@ -300,7 +325,9 @@ export default function UserDetailPage({ myPage }) {
           setBoxesInEdit={setBoxesInEdit}
           name={name}
           description={description}
+          image={image}
           handleProfileChange={handleProfileChange}
+          handleImageChange={handleImageChange}
         />
       </div>
       <div className="user-details flex flex-col bg-opacity-20 flex-1 py-10 pl-16 pr-4 overflow-y-auto">

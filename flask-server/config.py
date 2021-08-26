@@ -15,6 +15,8 @@ class Config(object):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    IMAGE_FOLDER = "./elice-profile-images"
+
 
 class ProductionConfig(Config):
     FLASK_ENV = "production"

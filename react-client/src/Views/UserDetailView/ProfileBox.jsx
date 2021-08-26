@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import EditItemButton from "./Shared/EditItemButton";
 
 export default function ProfileBox({
@@ -6,9 +6,12 @@ export default function ProfileBox({
   setBoxesInEdit,
   name,
   description,
+  image,
   handleProfileChange,
+  handleImageChange,
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const fileRef = useRef(null);
 
   return (
     <div
@@ -18,7 +21,38 @@ export default function ProfileBox({
           : "user-profile-box border-transparent"
       }
     >
-      <div className="w-48 h-48 rounded-full bg-detail-profile-img bg-contain shadow-2xl" />
+      <div
+        className="relative text-white w-48 h-48"
+        onClick={() => {
+          isEditing && fileRef.current.click();
+        }}
+      >
+        <img
+          className={`w-48 h-48 rounded-full shadow-xl pointer-events-none ${
+            isEditing &&
+            "opacity-70 pointer-events-auto cursor-pointer hover:opacity-40"
+          }`}
+          src={
+            image
+              ? image
+              : "https://i0.wp.com/prikachi.com/wp-content/uploads/2020/07/DPP1.jpg"
+          }
+        />
+        {isEditing && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-16 w-16 absolute top-16 left-16 cursor-pointer"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
+              clipRule="evenodd"
+            />
+          </svg>
+        )}
+      </div>
       {!isEditing ? (
         <>
           <h3
@@ -54,6 +88,14 @@ export default function ProfileBox({
             value={description}
             name="description"
             onChange={handleProfileChange}
+          />
+          <input
+            ref={fileRef}
+            type="file"
+            id="image"
+            name="image"
+            className="hidden"
+            onChange={handleImageChange}
           />
         </div>
       )}
