@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "../../Contexts/authContext";
+import AlertModal from "../../Components/AlertModal";
 
 export default function SignUpForm() {
   const { setCurrentUser } = useAuth();
@@ -16,6 +17,17 @@ export default function SignUpForm() {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
+
+  //==============
+  // Modal Alert
+  //==============
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    mainText: "",
+    isAlert: true,
+  });
+  const [showModalButtons, setShowModalButtons] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,35 +67,88 @@ export default function SignUpForm() {
     setPasswordValid(strongPassword.test(signUpDetails.password));
   };
 
+  const tempUserData = useRef(null);
   const handleSignUp = async (e) => {
     e.preventDefault();
     const { email, password, name } = signUpDetails;
 
     if (!email || !password || !name) {
-      alert("모든 항목을 입력해주세요.");
+      setModalContent({
+        mainText: "모든 항목을 입력해주세요.",
+        isAlert: true,
+      });
+      setShowModal(true);
       return;
     }
 
     if (!passwordMatch) {
-      alert("비밀번호가 일치하지 않습니다.");
+      setModalContent({
+        mainText: "비밀번호가 일치하지 않습니다.",
+        isAlert: true,
+      });
+      setShowModal(true);
       return;
     }
 
     try {
       const response = await axios.post("/api/users", signUpDetails);
       if (response) {
-        setCurrentUser(response.data);
-        alert("회원가입 성공! 메인페이지로 이동합니다.");
+        console.log("user!");
+        setModalContent({
+          title: "회원가입 성공!",
+          mainText: "지금 바로 포트폴리오를 설정하러 가시겠어요?",
+          isAlert: false,
+        });
+        setShowModalButtons(true);
+        setShowModal(true);
+        tempUserData.current = response.data;
         console.log("user created.", signUpDetails);
-        history.push("/");
       }
     } catch (e) {
-      alert("회원가입 실패");
+      setModalContent({
+        title: "회원가입 실패",
+        mainText: "나중에 다시 시도해주세요.",
+      });
     }
   };
 
   return (
     <div className="w-full">
+      {/* Alert modal */}
+      <AlertModal
+        title={modalContent.title}
+        mainText={modalContent.mainText}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        isAlert={modalContent.isAlert}
+      >
+        {showModalButtons && (
+          <div className="grid grid-cols-2 gap-2 w-full">
+            <button
+              onClick={() => {
+                setCurrentUser(tempUserData.current);
+                history.push({
+                  pathname: "/users/my-page",
+                  state: { isEditing: true },
+                });
+              }}
+              className="bg-indigo-500 p-2 rounded-full text-white text-lg h-full shadow-sm"
+            >
+              네!
+            </button>
+            <button
+              className="bg-indigo-50 p-2 rounded-full text-indigo-900 font-normal h-full border border-indigo-300"
+              onClick={() => {
+                setCurrentUser(tempUserData.current);
+                history.push("/");
+              }}
+            >
+              아니요, 구경부터 할래요
+            </button>
+          </div>
+        )}
+      </AlertModal>
+
       <form onSubmit={handleSignUp} className="mt-4">
         <div className="grid grid-cols-2 divide-x">
           <div className="grid grid-cols-1 gap-0 pr-6">

@@ -8,6 +8,7 @@ import AwardsBox from "./Awards/AwardsBox";
 import ProjectsBox from "./Projects/ProjectsBox";
 import CertsBox from "./Certifications/CertsBox";
 import ProfileBox from "./ProfileBox";
+import { useLocation } from "react-router-dom";
 
 export default function UserDetailPage({ myPage }) {
   const [name, setName] = useState(null);
@@ -17,6 +18,17 @@ export default function UserDetailPage({ myPage }) {
   const [awards, setAwards] = useState(null);
   const [projects, setProjects] = useState(null);
   const [certs, setCerts] = useState(null);
+
+  const [pageInEditMode, setPageInEditMode] = useState(false);
+  const [boxesInEdit, setBoxesInEdit] = useState(0);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.isEditing) {
+      setPageInEditMode(location.state.isEditing);
+    }
+  }, []);
 
   const createInitialState = () => {
     return {
@@ -71,9 +83,6 @@ export default function UserDetailPage({ myPage }) {
   useEffect(() => {
     fetchUserDetails();
   }, [searchId]);
-
-  const [pageInEditMode, setPageInEditMode] = useState(false);
-  const [boxesInEdit, setBoxesInEdit] = useState(0);
 
   // Validation check that forms are filled
   const validate = (collection) => {

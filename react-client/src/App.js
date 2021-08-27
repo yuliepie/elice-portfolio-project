@@ -13,7 +13,7 @@ function App() {
         console.log("Current user: ", currentUser);
       }
     });
-  }, []);
+  }, [currentUser]);
 
   return (
     <AuthProvider currentUser={currentUser} setCurrentUser={setCurrentUser}>
