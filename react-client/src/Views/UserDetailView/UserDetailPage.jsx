@@ -32,6 +32,7 @@ export default function UserDetailPage({ myPage }) {
   const deletedDetails = useRef(createInitialState()); // Deleted details - for DELETE request
   const changedProfile = useRef({});
   const changedImage = useRef(null);
+  const [pageEmpty, setPageEmpty] = useState(false);
 
   // API Fetch
   let { id } = useParams();
@@ -41,14 +42,28 @@ export default function UserDetailPage({ myPage }) {
   async function fetchUserDetails() {
     try {
       const response = await axios.get(`/api/users/${searchId}`);
-      const { user_details } = response.data;
-      setName(user_details.name);
-      setDescription(user_details.description);
-      setEducations(user_details.educations);
-      setAwards(user_details.awards);
-      setProjects(user_details.projects);
-      setCerts(user_details.certifications);
-      setImage(user_details.image);
+      const {
+        name,
+        description,
+        educations,
+        awards,
+        projects,
+        certifications,
+        image,
+      } = response.data.user_details;
+      setName(name);
+      setDescription(description);
+      setEducations(educations);
+      setAwards(awards);
+      setProjects(projects);
+      setCerts(certifications);
+      setImage(image);
+      setPageEmpty(
+        !educations.length &&
+          !awards.length &&
+          !projects.length &&
+          !certifications.length
+      );
     } catch (e) {
       console.log("error in getting user details:", e.message);
     }
@@ -363,6 +378,7 @@ export default function UserDetailPage({ myPage }) {
 
   return (
     <PageLayout>
+      {/* 프로필 사이드바 */}
       <div className="fixed inset-x-0 top-20 pt-10 h-full w-4/12 bg-indigo-400">
         <ProfileBox
           pageInEditMode={pageInEditMode}
@@ -375,112 +391,141 @@ export default function UserDetailPage({ myPage }) {
           changedImage={changedImage.current}
         />
       </div>
-      <div className="user-details flex flex-col bg-opacity-20 flex-1 py-10 pl-16 pr-4 overflow-y-auto">
-        <EducationsBox
-          educations={educations}
-          pageInEditMode={pageInEditMode}
-          setBoxesInEdit={setBoxesInEdit}
-          handleAdd={handleNewEducation}
-          validate={() => validate(educations)}
-          handleChange={(id, name, value) =>
-            handleChange(
-              id,
-              name,
-              value,
-              setEducations,
-              newDetails.current.educations,
-              changedDetails.current.educations
-            )
-          }
-          handleDelete={(id) => {
-            handleDelete(
-              id,
-              setEducations,
-              newDetails.current.educations,
-              changedDetails.current.educations,
-              deletedDetails.current.educations
-            );
-          }}
-        />
-        <AwardsBox
-          awards={awards}
-          pageInEditMode={pageInEditMode}
-          setBoxesInEdit={setBoxesInEdit}
-          handleAdd={handleNewAward}
-          validate={() => validate(awards)}
-          handleChange={(id, name, value) =>
-            handleChange(
-              id,
-              name,
-              value,
-              setAwards,
-              newDetails.current.awards,
-              changedDetails.current.awards
-            )
-          }
-          handleDelete={(id) => {
-            handleDelete(
-              id,
-              setAwards,
-              newDetails.current.awards,
-              changedDetails.current.awards,
-              deletedDetails.current.awards
-            );
-          }}
-        />
-        <ProjectsBox
-          projects={projects}
-          pageInEditMode={pageInEditMode}
-          setBoxesInEdit={setBoxesInEdit}
-          handleAdd={handleNewProject}
-          validate={() => validate(projects)}
-          handleChange={(id, name, value) =>
-            handleChange(
-              id,
-              name,
-              value,
-              setProjects,
-              newDetails.current.projects,
-              changedDetails.current.projects
-            )
-          }
-          handleDelete={(id) => {
-            handleDelete(
-              id,
-              setProjects,
-              newDetails.current.projects,
-              changedDetails.current.projects,
-              deletedDetails.current.projects
-            );
-          }}
-        />
-        <CertsBox
-          certs={certs}
-          pageInEditMode={pageInEditMode}
-          setBoxesInEdit={setBoxesInEdit}
-          handleAdd={handleNewCert}
-          validate={() => validate(certs)}
-          handleChange={(id, name, value) =>
-            handleChange(
-              id,
-              name,
-              value,
-              setCerts,
-              newDetails.current.certs,
-              changedDetails.current.certs
-            )
-          }
-          handleDelete={(id) => {
-            handleDelete(
-              id,
-              setCerts,
-              newDetails.current.certs,
-              changedDetails.current.certs,
-              deletedDetails.current.certs
-            );
-          }}
-        />
+      <div className="user-details flex flex-col h-full bg-opacity-20 flex-1 py-10 pl-16 pr-4 overflow-y-auto">
+        {(pageInEditMode || (educations && educations.length !== 0)) && (
+          <EducationsBox
+            educations={educations}
+            pageInEditMode={pageInEditMode}
+            setBoxesInEdit={setBoxesInEdit}
+            handleAdd={handleNewEducation}
+            validate={() => validate(educations)}
+            handleChange={(id, name, value) =>
+              handleChange(
+                id,
+                name,
+                value,
+                setEducations,
+                newDetails.current.educations,
+                changedDetails.current.educations
+              )
+            }
+            handleDelete={(id) => {
+              handleDelete(
+                id,
+                setEducations,
+                newDetails.current.educations,
+                changedDetails.current.educations,
+                deletedDetails.current.educations
+              );
+            }}
+          />
+        )}
+        {(pageInEditMode || (awards && awards.length !== 0)) && (
+          <AwardsBox
+            awards={awards}
+            pageInEditMode={pageInEditMode}
+            setBoxesInEdit={setBoxesInEdit}
+            handleAdd={handleNewAward}
+            validate={() => validate(awards)}
+            handleChange={(id, name, value) =>
+              handleChange(
+                id,
+                name,
+                value,
+                setAwards,
+                newDetails.current.awards,
+                changedDetails.current.awards
+              )
+            }
+            handleDelete={(id) => {
+              handleDelete(
+                id,
+                setAwards,
+                newDetails.current.awards,
+                changedDetails.current.awards,
+                deletedDetails.current.awards
+              );
+            }}
+          />
+        )}
+        {(pageInEditMode || (projects && projects.length !== 0)) && (
+          <ProjectsBox
+            projects={projects}
+            pageInEditMode={pageInEditMode}
+            setBoxesInEdit={setBoxesInEdit}
+            handleAdd={handleNewProject}
+            validate={() => validate(projects)}
+            handleChange={(id, name, value) =>
+              handleChange(
+                id,
+                name,
+                value,
+                setProjects,
+                newDetails.current.projects,
+                changedDetails.current.projects
+              )
+            }
+            handleDelete={(id) => {
+              handleDelete(
+                id,
+                setProjects,
+                newDetails.current.projects,
+                changedDetails.current.projects,
+                deletedDetails.current.projects
+              );
+            }}
+          />
+        )}
+        {((certs && certs.length !== 0) || pageInEditMode) && (
+          <CertsBox
+            certs={certs}
+            pageInEditMode={pageInEditMode}
+            setBoxesInEdit={setBoxesInEdit}
+            handleAdd={handleNewCert}
+            validate={() => validate(certs)}
+            handleChange={(id, name, value) =>
+              handleChange(
+                id,
+                name,
+                value,
+                setCerts,
+                newDetails.current.certs,
+                changedDetails.current.certs
+              )
+            }
+            handleDelete={(id) => {
+              handleDelete(
+                id,
+                setCerts,
+                newDetails.current.certs,
+                changedDetails.current.certs,
+                deletedDetails.current.certs
+              );
+            }}
+          />
+        )}
+
+        {/* 정보가 없습니다 */}
+        {pageEmpty && !pageInEditMode && (
+          <div className="inline-flex flex-col mt-20 items-center text-gray-400">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-20 w-20 mx-auto"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="mt-6 text-gray-500">표시할 정보가 아직 없습니다!</p>
+          </div>
+        )}
       </div>
+
+      {/* 수정 사이드바 */}
       <div className="fixed inset-y-20 right-0 w-1/5 h-full flex flex-col py-4 px-2 justify-start items-start">
         {myPage && !pageInEditMode && (
           <button
