@@ -237,7 +237,8 @@ export default function UserDetailPage({ myPage }) {
         "name" in changedProfile.current ||
         "description" in changedProfile.current;
 
-      const someImageChange = changedImage.current;
+      const someImageChange = changedImage.current !== null;
+      console.log(someImageChange);
 
       const somethingToPost = checkModification(newDetails.current);
       const somethingToPatch = checkModification(changedDetails.current);
@@ -300,18 +301,19 @@ export default function UserDetailPage({ myPage }) {
             axios.post(`/api/users/${searchId}/certifications`, formattedCert)
           );
         });
+      }
 
-        if (someImageChange) {
-          let imageData = new FormData();
-          imageData.append("profile_image", changedImage.current);
-          promises.push(
-            axios.post(`/api/users/${searchId}/image`, imageData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            })
-          );
-        }
+      if (someImageChange) {
+        console.log("image: ", someImageChange);
+        let imageData = new FormData();
+        imageData.append("profile_image", changedImage.current);
+        promises.push(
+          axios.post(`/api/users/${searchId}/image`, imageData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+        );
       }
 
       //---------
