@@ -11,6 +11,8 @@ export default function CertsBox({
   handleAdd,
   validate,
   handleDelete,
+  setShowModal,
+  setModalContent,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -23,6 +25,8 @@ export default function CertsBox({
       setBoxesInEdit={setBoxesInEdit}
       handleAdd={handleAdd}
       validate={validate}
+      setShowModal={setShowModal}
+      setModalContent={setModalContent}
     >
       {certs &&
         (!isEditing

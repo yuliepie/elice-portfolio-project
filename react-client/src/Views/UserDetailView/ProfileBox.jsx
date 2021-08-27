@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import EditItemButton from "./Shared/EditItemButton";
+import AlertModal from "../../Components/AlertModal";
 
 export default function ProfileBox({
   pageInEditMode,
@@ -10,6 +11,8 @@ export default function ProfileBox({
   handleProfileChange,
   handleImageChange,
   changedImage,
+  setShowModal,
+  setModalContent,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const fileRef = useRef(null);
@@ -122,7 +125,10 @@ export default function ProfileBox({
                 setIsEditing(false);
                 setBoxesInEdit((prev) => prev - 1);
               } else {
-                alert("모든 항목을 입력하세요.");
+                setModalContent({
+                  mainText: "모든 항목을 입력해주세요!",
+                });
+                setShowModal(true);
               }
             }}
             className="edit-btn text-sm p-2 rounded-lg absolute -top-2 right-2 text-white shadow-lg transition duration-200 ease-in-out"

@@ -9,6 +9,8 @@ export default function UserDetailsBox({
   setBoxesInEdit,
   handleAdd,
   validate,
+  setShowModal,
+  setModalContent,
 }) {
   return (
     <div
@@ -43,7 +45,10 @@ export default function UserDetailsBox({
                 setIsEditing(false);
                 setBoxesInEdit((prev) => prev - 1);
               } else {
-                alert("모든 항목을 입력하세요.");
+                setModalContent({
+                  mainText: "모든 항목을 입력하세요.",
+                });
+                setShowModal(true);
               }
             }}
             className="edit-btn text-sm p-2 rounded-lg absolute top-4 right-6 text-white shadow-lg hover:bg-opacity-50 transition duration-200 ease-in-out"

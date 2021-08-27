@@ -11,6 +11,8 @@ export default function AwardsBox({
   handleAdd,
   validate,
   handleDelete,
+  setShowModal,
+  setModalContent,
 }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -23,6 +25,8 @@ export default function AwardsBox({
       setBoxesInEdit={setBoxesInEdit}
       handleAdd={handleAdd}
       validate={validate}
+      setShowModal={setShowModal}
+      setModalContent={setModalContent}
     >
       {awards &&
         (!isEditing
