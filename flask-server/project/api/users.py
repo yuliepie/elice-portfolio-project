@@ -12,7 +12,7 @@ def index():
     return jsonify({"result": "success"})
 
 
-# Register new user
+# Register new user & log in
 @users_blueprint.route("/users", methods=["POST"])
 def register():
     try:
@@ -23,13 +23,22 @@ def register():
         )
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"result": 1, "message": "registration success"})
+
+        # log the user in straight away and send user data.
+        login_user(new_user)
+        return jsonify(
+            {
+                "id": current_user.id,
+                "email": current_user.email,
+                "name": current_user.name,
+            }
+        )
     except IntegrityError:
         db.session.rollback()
-        return jsonify({"result": 0, "message": "existing user"})
+        return "Existing user.", 401
     except:
         db.session.rollback()
-        return jsonify({"result": 0, "message": "registration fail"})
+        return "Failed registration.", 500
 
 
 # Login user
@@ -107,6 +116,7 @@ def check_current_user():
                 "name": current_user.name,
             }
         )
+    return "Not logged in.", 401
 
 
 ######################

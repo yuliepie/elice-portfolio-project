@@ -1,8 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
+import { useAuth } from "../../Contexts/authContext";
 
 export default function SignUpForm() {
+  const { setCurrentUser } = useAuth();
   const history = useHistory();
   const [signUpDetails, setSignUpDetails] = useState({
     email: "",
@@ -70,9 +72,10 @@ export default function SignUpForm() {
     try {
       const response = await axios.post("/api/users", signUpDetails);
       if (response) {
-        alert("회원가입 성공!");
+        setCurrentUser(response.data);
+        alert("회원가입 성공! 메인페이지로 이동합니다.");
         console.log("user created.", signUpDetails);
-        history.push("/login");
+        history.push("/");
       }
     } catch (e) {
       alert("회원가입 실패");
