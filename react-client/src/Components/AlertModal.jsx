@@ -6,6 +6,7 @@ export default function AlertModal({
   mainText,
   showModal,
   setShowModal,
+  onModalClose,
   children,
 }) {
   return (
@@ -17,6 +18,9 @@ export default function AlertModal({
       onClick={(e) => {
         if (e.target.id === "modal-parent") {
           setShowModal(false);
+          if (onModalClose) {
+            onModalClose();
+          }
         }
       }}
     >
@@ -28,7 +32,12 @@ export default function AlertModal({
         {isAlert && (
           <span
             className="text-gray-900 self-end absolute top-3 right-4 cursor-pointer hover:text-gray-400"
-            onClick={() => setShowModal(false)}
+            onClick={() => {
+              setShowModal(false);
+              if (onModalClose) {
+                onModalClose();
+              }
+            }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
