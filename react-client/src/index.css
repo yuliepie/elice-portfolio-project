@@ -57,7 +57,7 @@
     @apply w-full pt-2.5;
   }
   .edit-btn {
-    @apply rounded-lg bg-gray-700 text-white text-sm font-medium p-2 font-light hover:bg-gray-400 transition duration-150 ease-in-out shadow-lg delay-75 z-40;
+    @apply rounded-lg bg-gray-700 text-white text-sm font-medium p-2 font-light hover:bg-gray-400 transition duration-150 ease-in-out shadow-lg delay-75 z-10;
   }
   .finish-btn {
     @apply edit-btn bg-red-500 hover:bg-red-500 hover:bg-opacity-80 shared-transition;
