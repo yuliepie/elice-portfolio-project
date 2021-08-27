@@ -23,8 +23,13 @@ export default function UserCard({ user }) {
       <div className="text-center text-lg mt-5 font-semibold text-gray-900 text-opacity-90">
         {user.name}
       </div>
-      <p className="text-sm mt-1 text-gray-700 font-light">
-        {user.description}
+      <div></div>
+      <p
+        className={`w-full text-center whitespace-nowrap truncate text-sm mt-1 font-light ${
+          !user.description ? "text-transparent" : "text-gray-700"
+        }`}
+      >
+        {user.description ? user.description : "placeholder text"}
       </p>
       <div className="px-2 h-0.5 w-full m-4 border-gray-400 border-b border-opacity-50  "></div>
       <button

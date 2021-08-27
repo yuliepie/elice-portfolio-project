@@ -69,7 +69,7 @@ export default function ProfileBox({
             {name}
           </h3>
           <p
-            className={`mt-3 text-base font-medium shared-transition ${
+            className={`mt-4 text-lg font-medium shared-transition ${
               pageInEditMode ? "text-gray-700" : "text-indigo-50"
             }`}
           >

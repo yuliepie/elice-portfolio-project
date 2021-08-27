@@ -76,7 +76,7 @@ export default function MainPage() {
           <input
             name="searchbox"
             type="text"
-            className="focus:ring-transparent p-2 text-sm transparent border-none flex-1"
+            className="focus:ring-transparent p-2 transparent border-none flex-1"
             placeholder="프로필을 검색해보세요!"
             autoComplete="off"
             onChange={(e) => setQuery(e.target.value)}
@@ -101,7 +101,7 @@ export default function MainPage() {
         id="resultsContainer"
         name="resultsContainer"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 w-4/6 mx-auto">
+        <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 w-4/6 mx-auto">
           {users && users.map((user) => <UserCard key={user.id} user={user} />)}
         </div>
         {users && !users.length && (
