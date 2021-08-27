@@ -10,7 +10,7 @@
     @apply mt-2 block w-2/3 rounded-md font-normal border-gray-700 border-2 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
   }
   .nav-item {
-    @apply w-auto mx-2 text-sm text-gray-500 border-transparent border-b-2 pb-1.5 hover:border-indigo-400 transition ease-in-out duration-500 active:border-indigo-400;
+    @apply w-auto mx-2 text-sm text-gray-500 border-transparent border-b-2 pb-1.5 hover:border-red-400 transition ease-in-out duration-500 active:border-indigo-400;
   }
 
   /* .main-btn {

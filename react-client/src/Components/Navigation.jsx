@@ -30,8 +30,8 @@ export default function Navigation() {
             <NavLink className="nav-item" to="/">
               네트워크
             </NavLink>
-            <NavLink className="nav-item" to={`/users/my-page`}>
-              마이페이지
+            <NavLink className="nav-item px-1" to={`/users/my-page`}>
+              {`${currentUser.name}`}
             </NavLink>
             <button className="nav-item" onClick={handleLogout}>
               Logout
