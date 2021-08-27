@@ -4,10 +4,13 @@
 
 @layer components {
   .form-style {
-    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mb-0;
   }
   .details-form-style {
     @apply mt-2 block w-2/3 rounded-md font-normal border-gray-700 border-2 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+  }
+  .form-warning {
+    @apply mt-0.5 justify-self-end text-xs text-right;
   }
   .nav-item {
     @apply w-auto mx-2 text-sm text-gray-500 border-transparent border-b-2 pb-1.5 hover:border-red-400 transition ease-in-out duration-500 active:border-indigo-400;

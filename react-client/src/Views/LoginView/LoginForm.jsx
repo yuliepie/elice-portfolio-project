@@ -7,6 +7,7 @@ export default function LoginForm() {
   const history = useHistory();
   const { setCurrentUser } = useAuth();
   const [loginDetails, setLoginDetails] = useState({ email: "", password: "" });
+  const [emailValid, setEmailValid] = useState(true);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -16,8 +17,17 @@ export default function LoginForm() {
     setLoginDetails(newLoginDetail);
   };
 
+  const checkEmailIsValid = () => {
+    if (!loginDetails.email.includes("@")) {
+      setEmailValid(false);
+      return;
+    }
+    setEmailValid(true);
+  };
+
   const handleLoginSubmit = (e) => {
     e.preventDefault();
+    if (!emailValid) return;
 
     axios
       .post("/api/login", loginDetails)
@@ -49,9 +59,18 @@ export default function LoginForm() {
               placeholder="john@example.com"
               required
               onChange={handleInputChange}
+              onBlur={checkEmailIsValid}
             />
           </label>
-          <label className="block mt-7">
+          <p
+            className={`form-warning text-transparent ${
+              !emailValid && "text-red-500"
+            }`}
+          >
+            아이디는 이메일 형식이여야 합니다.
+          </p>
+
+          <label className="block mt-5">
             <p className="text-gray-700 font-medium ml-1 mb-2.5">비밀번호:</p>
             <input
               name="password"
