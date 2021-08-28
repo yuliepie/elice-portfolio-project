@@ -60,7 +60,7 @@ export default function UserDetailPage({ myPage }) {
 
   // API Fetch
   let { id } = useParams();
-  const { currentUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
   const searchId = myPage ? currentUser.id : id;
 
   async function fetchUserDetails() {
@@ -398,6 +398,14 @@ export default function UserDetailPage({ myPage }) {
         })
         .then(() => {
           fetchUserDetails();
+          // update name of current user
+          if (someProfileChange && "name" in changedProfile.current) {
+            setCurrentUser((prev) => {
+              const newState = { ...prev };
+              newState.name = changedProfile.current.name;
+              return newState;
+            });
+          }
           newDetails.current = createInitialState();
           changedDetails.current = createInitialState();
           deletedDetails.current = createInitialState();

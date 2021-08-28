@@ -32,7 +32,7 @@ export default function ProfileBox({
         }}
       >
         <img
-          className={`w-48 h-48 rounded-full shadow-xl pointer-events-none ${
+          className={`w-48 h-48 rounded-full shadow-xl pointer-events-none object-cover ${
             isEditing &&
             "opacity-70 pointer-events-auto cursor-pointer hover:opacity-40"
           }`}

@@ -81,9 +81,9 @@ export default function SignUpForm() {
       return;
     }
 
-    if (!passwordMatch) {
+    if (!passwordValid || !emailValid || !passwordMatch) {
       setModalContent({
-        mainText: "비밀번호가 일치하지 않습니다.",
+        mainText: "입력하신 정보를 다시 확인해 주세요.",
         isAlert: true,
       });
       setShowModal(true);
