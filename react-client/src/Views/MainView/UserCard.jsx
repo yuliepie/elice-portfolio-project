@@ -13,7 +13,7 @@ export default function UserCard({ user }) {
       onClick={handleUserClick}
     >
       <img
-        className="rounded-full h-24 w-24 shadow-xl"
+        className="rounded-full h-24 w-24 shadow-xl object-cover"
         src={
           user.imagePath
             ? `${process.env.REACT_APP_SERVER_DOMAIN}/${user.imagePath}`
