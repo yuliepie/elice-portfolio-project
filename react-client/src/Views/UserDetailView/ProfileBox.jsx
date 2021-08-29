@@ -40,7 +40,9 @@ export default function ProfileBox({
             changedImage
               ? image
               : image
-              ? `${process.env.REACT_APP_SERVER_DOMAIN}/${image}`
+              ? `${
+                  process.env.REACT_APP_SERVER_DOMAIN
+                }/${image}?${performance.now()}`
               : "https://i0.wp.com/prikachi.com/wp-content/uploads/2020/07/DPP1.jpg"
           }
         />

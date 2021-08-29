@@ -35,11 +35,13 @@ def parse_date_helper(data):
 
 
 def validate_image_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in {
-        "png",
-        "jpg",
-        "jpeg",
-    }
+    if "." not in filename:
+        return (False,)
+    extension = filename.rsplit(".", 1)[1].lower()
+    if extension not in {"png", "jpg", "jpeg"}:
+        return (False,)
+    else:
+        return (True, extension)
 
 
 def post_details_helper(new_data, model, current_user_id):
@@ -201,12 +203,13 @@ def upload_profile_image(user_id):
         return "No file uploaded.", 404
 
     profile_image = request.files["profile_image"]
-    if profile_image.filename == "":
+    if not profile_image or profile_image.filename == "":
         return "No file uploaded.", 404
 
     # If image exists and is valid
-    if profile_image and validate_image_file(profile_image.filename):
-        filename = secure_filename(profile_image.filename)
+    isValidImage = validate_image_file(profile_image.filename)
+    if isValidImage[0] == True:
+        filename = current_user.email + "." + isValidImage[1]
         filepath = os.path.join(current_app.config["IMAGE_FOLDER"], filename)
         profile_image.save(filepath)
 
@@ -217,10 +220,13 @@ def upload_profile_image(user_id):
             user.imagePath = path_to_save
 
             db.session.commit()
+            current_app.logger.info(f"Saved image file at path: {filepath}")
             return jsonify({"filepath": filepath})
         except:
             db.session.rollback()
-            return ("Faild to save image.", 500)
+            return "Failed to save image.", 500
+    else:
+        return "Not a valid image.", 415
 
 
 ###################

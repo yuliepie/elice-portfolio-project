@@ -238,8 +238,6 @@ export default function UserDetailPage({ myPage }) {
         "description" in changedProfile.current;
 
       const someImageChange = changedImage.current !== null;
-      console.log(someImageChange);
-
       const somethingToPost = checkModification(newDetails.current);
       const somethingToPatch = checkModification(changedDetails.current);
       const somethingToDelete = checkModification(deletedDetails.current);

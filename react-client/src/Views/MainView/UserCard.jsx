@@ -16,7 +16,9 @@ export default function UserCard({ user }) {
         className="rounded-full h-24 w-24 shadow-xl object-cover"
         src={
           user.imagePath
-            ? `${process.env.REACT_APP_SERVER_DOMAIN}/${user.imagePath}`
+            ? `${process.env.REACT_APP_SERVER_DOMAIN}/${
+                user.imagePath
+              }?${performance.now()}`
             : "https://i0.wp.com/prikachi.com/wp-content/uploads/2020/07/DPP1.jpg"
         }
       />
