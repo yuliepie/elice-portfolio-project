@@ -390,10 +390,17 @@ export default function UserDetailPage({ myPage }) {
           setShowModal(true);
         })
         .catch((e) => {
-          setModalContent({
-            title: "실패",
-            mainText: "나중에 다시 시도해주세요.",
-          });
+          if (e.response.status === 415) {
+            setModalContent({
+              title: "이미지 업로드 실패",
+              mainText: "이미지 파일을 확인 해 주세요.",
+            });
+          } else {
+            setModalContent({
+              title: "실패",
+              mainText: "나중에 다시 시도해주세요.",
+            });
+          }
           setShowModal(true);
         })
         .then(() => {
@@ -415,6 +422,7 @@ export default function UserDetailPage({ myPage }) {
 
       setPageInEditMode(false);
     } else {
+      // If some box still in edit:
       setModalContent({
         mainText: "수정 완료되지 않은 항목이 있습니다.",
       });

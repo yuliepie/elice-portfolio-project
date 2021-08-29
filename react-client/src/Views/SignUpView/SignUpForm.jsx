@@ -72,7 +72,7 @@ export default function SignUpForm() {
     e.preventDefault();
     const { email, password, name } = signUpDetails;
 
-    if (!email || !password || !name) {
+    if (!email || !password || !name || !secondPassword) {
       setModalContent({
         mainText: "모든 항목을 입력해주세요.",
         isAlert: true,
@@ -105,10 +105,18 @@ export default function SignUpForm() {
         console.log("user created.", signUpDetails);
       }
     } catch (e) {
-      setModalContent({
-        title: "회원가입 실패",
-        mainText: "나중에 다시 시도해주세요.",
-      });
+      if (e.response.status === 401) {
+        setModalContent({
+          title: "회원가입 실패",
+          mainText: "이미 등록된 이메일 주소입니다.",
+        });
+      } else {
+        setModalContent({
+          title: "회원가입 실패",
+          mainText: "나중에 다시 시도해주세요.",
+        });
+      }
+      setShowModal(true);
     }
   };
 
